@@ -1,7 +1,7 @@
 title: "CyberCore – HLS Berlin"
 description: "Informatik Lernplattform · E-Phase · Informatiksysteme"
-baseurl: "/inf"
-url: "https://andirz.github.io"
+baseurl: ""
+url: "https://info-school.pages.dev"
 
 markdown: kramdown
 highlighter: rouge

@@ -3,60 +3,16 @@ layout: quest
 title: Dashboard · CyberCore
 ---
 
-<!-- INTRO SCREEN -->
-<div id="intro-screen">
-  <div class="intro-terminal">
-    <div class="intro-topbar">
-      <div class="intro-dot red"></div>
-      <div class="intro-dot amber"></div>
-      <div class="intro-dot green"></div>
-      <span class="intro-title">CYBERCORE GmbH · SECURE TERMINAL v2.1</span>
-    </div>
-
-    <div class="intro-line" id="il-0">
-      <span class="prompt">$</span>
-      <span class="dim">Verbindung wird hergestellt...</span>
-    </div>
-    <div class="intro-line" id="il-1">
-      <span class="prompt">$</span>
-      <span>Verbindung zu <span class="highlight">CYBERCORE-SERVER-07</span> hergestellt.</span>
-    </div>
-    <div class="intro-line" id="il-2">
-      <span class="prompt">!</span>
-      <span class="red">KRITISCHER ALARM — Sicherheitsvorfall erkannt</span>
-    </div>
-    <div class="intro-line" id="il-3">
-      <span class="prompt">!</span>
-      <span class="amber">Ziel: Hans-Litten-Schule Berlin · Netzwerk kompromittiert</span>
-    </div>
-    <div class="intro-line" id="il-4">
-      <span class="prompt">$</span>
-      <span>Suche verfügbare Analysten... <span class="green">1 Analyst gefunden.</span></span>
-    </div>
-    <div class="intro-line" id="il-5">
-      <span class="prompt">></span>
-      <span class="highlight">Du wirst gebraucht. Bist du bereit?</span>
-      <span class="intro-cursor"></span>
-    </div>
-
-    <button class="intro-btn" id="intro-btn" onclick="startMission()">
-      <i class="fa-solid fa-circle-play"></i>&nbsp;&nbsp;MISSION STARTEN
-    </button>
-  </div>
-</div>
-
-<!-- DASHBOARD -->
 <div class="cc-section-title">// MISSION CONTROL</div>
-<div class="cc-section-sub">Aktiver Vorfall: HLS Berlin · Analyst eingeloggt · 08.09.2025 · 03:47 UTC</div>
+<div class="cc-section-sub">Aktiver Vorfall: HLS Berlin · 08.09.2025 · 03:47 UTC</div>
 
 <div class="cc-briefing">
   <div class="cc-briefing-title">// LAGEBERICHT</div>
   <p>
     In der Nacht zum 8. September wurde das Schulnetzwerk der <strong>Hans-Litten-Schule Berlin</strong>
-    von einer unbekannten Person kompromittiert. Ein Administratorkonto wurde übernommen,
-    vertrauliche Schülerdaten wurden eingesehen. <strong>Deine Aufgabe:</strong>
-    Analysiere den Vorfall, identifiziere die Schwachstellen und erstelle einen Abschlussbericht.
-    Drei Blöcke. Ein Ziel.
+    kompromittiert. Ein Administratorkonto wurde übernommen, vertrauliche Schülerdaten eingesehen.
+    <strong>Deine Aufgabe:</strong> Analysiere den Vorfall, identifiziere die Schwachstellen,
+    erstelle einen Abschlussbericht. Drei Blöcke. Ein Ziel.
   </p>
 </div>
 
@@ -98,14 +54,13 @@ title: Dashboard · CyberCore
       <div class="cc-log-entry"><span class="cc-log-time">03:48:12</span><span class="cc-log-msg ok">PRIVILEGE ESCALATION → root</span></div>
     </div>
   </div>
-
   <div class="cc-card">
     <div class="cc-card-title">
       <i class="fa-solid fa-list-check" aria-hidden="true"></i>
       MISSION BLÖCKE
     </div>
     <div class="cc-block-list">
-      <a href="{{ site.baseurl }}/quest/block1/" class="cc-block-item">
+      <a href="/quest/block1/" class="cc-block-item">
         <span class="cc-block-num">BLOCK 01</span>
         <div class="cc-block-info">
           <div class="cc-block-name">Erstzugang & Authentifizierung</div>
@@ -119,7 +74,7 @@ title: Dashboard · CyberCore
           <div class="cc-block-name">Tatortanalyse</div>
           <div class="cc-block-desc">Hardware · Software · EVA</div>
         </div>
-        <span class="cc-block-status locked"><i class="fa-solid fa-lock" style="font-size:12px"></i> GESPERRT</span>
+        <span class="cc-block-status locked"><i class="fa-solid fa-lock"></i> GESPERRT</span>
       </div>
       <div class="cc-block-item locked">
         <span class="cc-block-num">BLOCK 03</span>
@@ -127,7 +82,7 @@ title: Dashboard · CyberCore
           <div class="cc-block-name">Abschlussbericht</div>
           <div class="cc-block-desc">Kodierung · Dokumentation</div>
         </div>
-        <span class="cc-block-status locked"><i class="fa-solid fa-lock" style="font-size:12px"></i> GESPERRT</span>
+        <span class="cc-block-status locked"><i class="fa-solid fa-lock"></i> GESPERRT</span>
       </div>
     </div>
   </div>
@@ -137,37 +92,5 @@ title: Dashboard · CyberCore
   <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
   <span>Hinweise verwendet:</span>
   <span class="cc-hint-count" id="hint-count-bar">0</span>
-  <span style="margin-left:auto; color: var(--text-dim); font-size:12px">Jeder Hinweis wird gezählt · Stark sein lohnt sich</span>
+  <span style="margin-left:auto; color:var(--text-dim); font-size:12px">Jeder Hinweis wird gezählt · Stark sein lohnt sich</span>
 </div>
-
-<script>
-const INTRO_KEY = 'hls_intro_done';
-
-function startMission() {
-  localStorage.setItem(INTRO_KEY, '1');
-  document.getElementById('intro-screen').classList.add('hidden');
-  document.querySelector('.cc-shell').classList.add('visible');
-}
-
-(function() {
-  if (localStorage.getItem(INTRO_KEY)) {
-    document.getElementById('intro-screen').style.display = 'none';
-    document.querySelector('.cc-shell').classList.add('visible');
-    return;
-  }
-
-  const lines = [0,1,2,3,4,5];
-  const delays = [300, 900, 1800, 2600, 3400, 4200];
-
-  lines.forEach((i, idx) => {
-    setTimeout(() => {
-      document.getElementById('il-' + i).classList.add('visible');
-      if (idx === lines.length - 1) {
-        setTimeout(() => {
-          document.getElementById('intro-btn').style.display = 'block';
-        }, 600);
-      }
-    }, delays[idx]);
-  });
-})();
-</script>

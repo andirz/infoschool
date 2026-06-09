@@ -1,8 +1,38 @@
 ---
 layout: default
 ---
-<div class="cc-shell">
-  {% include quest-topbar.html %}
+<!-- INTRO SCREEN – direkt in body, außerhalb cc-shell -->
+<div id="intro-screen">
+  <div class="intro-terminal">
+    <div class="intro-topbar">
+      <div class="intro-dot intro-dot--red"></div>
+      <div class="intro-dot intro-dot--amber"></div>
+      <div class="intro-dot intro-dot--green"></div>
+      <span class="intro-title">CYBERCORE GmbH · SECURE TERMINAL v2.1</span>
+    </div>
+    <div class="intro-line" id="il-0"><span class="intro-prompt">$</span><span class="intro-dim">Verbindung wird hergestellt...</span></div>
+    <div class="intro-line" id="il-1"><span class="intro-prompt">$</span><span>Verbindung zu <strong>CYBERCORE-SERVER-07</strong> hergestellt.</span></div>
+    <div class="intro-line" id="il-2"><span class="intro-prompt">!</span><span class="intro-red">KRITISCHER ALARM — Sicherheitsvorfall erkannt</span></div>
+    <div class="intro-line" id="il-3"><span class="intro-prompt">!</span><span class="intro-amber">Ziel: Hans-Litten-Schule Berlin · Netzwerk kompromittiert</span></div>
+    <div class="intro-line" id="il-4"><span class="intro-prompt">$</span><span>Verfügbare Analysten: <span class="intro-green">1 gefunden.</span></span></div>
+    <div class="intro-line" id="il-5"><span class="intro-prompt">></span><strong>Du wirst gebraucht. Bist du bereit?</strong><span class="intro-cursor"></span></div>
+    <button class="intro-btn" id="intro-btn" onclick="startMission()">
+      <i class="fa-solid fa-circle-play"></i>&nbsp; MISSION STARTEN
+    </button>
+  </div>
+</div>
+
+<div class="cc-shell" id="cc-shell">
+  <header class="cc-topbar">
+    <div class="cc-topbar-left">
+      <span class="cc-logo">CYBERCORE GmbH</span>
+      <span class="cc-incident-badge"><i class="fa-solid fa-circle-dot"></i> INCIDENT ACTIVE</span>
+    </div>
+    <div class="cc-topbar-right">
+      <span class="cc-topbar-info"><span class="cc-status-dot"></span>BREACH DETECTED: HLS Berlin</span>
+      <span class="cc-topbar-info">2025-09-08 · 03:47 UTC</span>
+    </div>
+  </header>
   <div class="cc-layout">
     {% include quest-sidebar.html %}
     <main class="cc-main">
@@ -10,3 +40,33 @@ layout: default
     </main>
   </div>
 </div>
+
+<script>
+const INTRO_KEY = 'hls_intro_done';
+
+function startMission() {
+  localStorage.setItem(INTRO_KEY, '1');
+  document.getElementById('intro-screen').style.display = 'none';
+  document.getElementById('cc-shell').style.opacity = '1';
+}
+
+(function() {
+  if (localStorage.getItem(INTRO_KEY)) {
+    document.getElementById('intro-screen').style.display = 'none';
+    document.getElementById('cc-shell').style.opacity = '1';
+    return;
+  }
+
+  const delays = [300, 900, 1600, 2300, 3000, 3700];
+  delays.forEach((delay, i) => {
+    setTimeout(() => {
+      document.getElementById('il-' + i).classList.add('visible');
+      if (i === delays.length - 1) {
+        setTimeout(() => {
+          document.getElementById('intro-btn').style.display = 'block';
+        }, 500);
+      }
+    }, delay);
+  });
+})();
+</script>

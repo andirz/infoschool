@@ -1,0 +1,1054 @@
+---
+layout: default
+title: HEIST.EXE · CyberCore
+---
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0d13;--surface:#111520;--card:#161c2a;--input:#0a0d13;
+  --border:#1e2d45;--bright:#2a4060;
+  --text:#e8f0ff;--sec:#8ba8cc;--muted:#4a6a8a;--dim:#2a3a50;
+  --accent:#4d9fff;--accent-bg:rgba(77,159,255,.12);
+  --green:#3ddc84;--green-bg:rgba(61,220,132,.1);
+  --red:#ff4d6d;--red-bg:rgba(255,77,109,.1);
+  --amber:#ffb547;--amber-bg:rgba(255,181,71,.1);
+  --purple:#b47eff;--purple-bg:rgba(180,126,255,.1);
+  --gold:#ffd700;
+  --mono:'Courier New',monospace;
+  --ui:system-ui,sans-serif;
+  --r:8px;--rl:14px;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--ui);font-size:16px;line-height:1.7;overflow-x:hidden}
+
+/* ══ INTRO ══════════════════════════════════════════════════ */
+#intro{position:fixed;inset:0;background:#000;z-index:9999;display:flex;align-items:center;justify-content:center;padding:2rem;flex-direction:column;gap:0}
+.intro-scanline{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.15) 2px,rgba(0,0,0,.15) 4px);pointer-events:none;opacity:.4}
+.intro-box{width:100%;max-width:760px;background:#050810;border:1px solid #1a2a40;border-radius:var(--rl);padding:2.5rem 3rem;font-family:var(--mono);position:relative;z-index:1}
+.intro-titlebar{display:flex;align-items:center;gap:8px;margin-bottom:2rem;padding-bottom:1.2rem;border-bottom:1px solid #1a2a40}
+.itb-dot{width:14px;height:14px;border-radius:50%}
+.itb-dot.r{background:#ff5f57}.itb-dot.a{background:#febc2e}.itb-dot.g{background:#28c840}
+.itb-label{margin-left:10px;font-size:11px;color:#2a3a50;letter-spacing:3px}
+.intro-line{font-size:15px;line-height:2.4;opacity:0;transform:translateY(4px);transition:opacity .4s,transform .4s}
+.intro-line.show{opacity:1;transform:translateY(0)}
+.ip{color:#4d9fff;margin-right:10px}
+.iw{color:#e8f0ff;font-weight:700}
+.ir{color:#ff4d6d}.ig{color:#3ddc84}.iam{color:#ffb547}.idim{color:#2a3a50}
+.intro-cursor{display:inline-block;width:10px;height:1em;background:#4d9fff;vertical-align:middle;margin-left:6px;animation:blink 1s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+#intro-btn{display:none;width:100%;margin-top:2rem;padding:18px;background:transparent;border:2px solid #4d9fff;border-radius:var(--r);color:#4d9fff;font-family:var(--mono);font-size:16px;letter-spacing:3px;cursor:pointer;transition:all .2s;animation:glow-pulse 2s ease infinite}
+@keyframes glow-pulse{0%,100%{box-shadow:0 0 0 0 rgba(77,159,255,.3)}50%{box-shadow:0 0 24px 6px rgba(77,159,255,.15)}}
+#intro-btn:hover{background:rgba(77,159,255,.12);color:#fff;border-color:#7ab8ff}
+
+/* ══ SHELL ═══════════════════════════════════════════════════ */
+#shell{display:none;flex-direction:column;min-height:100vh}
+
+/* ══ TOPBAR ══════════════════════════════════════════════════ */
+.topbar{background:#05080f;border-bottom:1px solid #1a2a40;padding:12px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.tb-left{display:flex;align-items:center;gap:16px}
+.tb-logo{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--accent);letter-spacing:3px}
+.tb-badge{background:var(--red-bg);border:1px solid rgba(255,77,109,.4);border-radius:4px;padding:3px 12px;font-size:11px;color:var(--red);font-family:var(--mono);letter-spacing:1px;animation:pulse-r 2s ease infinite}
+@keyframes pulse-r{50%{opacity:.6}}
+.tb-right{display:flex;align-items:center;gap:20px}
+.tb-timer{font-family:var(--mono);font-size:14px;color:var(--red);letter-spacing:2px;background:var(--red-bg);border:1px solid rgba(255,77,109,.2);border-radius:4px;padding:4px 14px}
+.tb-reset{background:transparent;border:1px solid rgba(255,77,109,.25);border-radius:5px;color:rgba(255,77,109,.6);font-family:var(--mono);font-size:11px;padding:5px 12px;cursor:pointer;transition:all .2s;letter-spacing:1px}
+.tb-reset:hover{border-color:var(--red);color:var(--red);background:var(--red-bg)}
+.tb-hints{font-family:var(--mono);font-size:11px;color:var(--amber);background:var(--amber-bg);border:1px solid rgba(255,181,71,.2);border-radius:4px;padding:4px 12px}
+
+/* ══ ROOM NAV ════════════════════════════════════════════════ */
+.room-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;display:flex;gap:0;overflow-x:auto}
+.room-tab{display:flex;align-items:center;gap:8px;padding:14px 20px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:1px;border-bottom:2px solid transparent;cursor:default;white-space:nowrap;transition:all .2s;opacity:.4}
+.room-tab.unlocked{opacity:.7;cursor:pointer}
+.room-tab.unlocked:hover{color:var(--text);opacity:1}
+.room-tab.active{color:var(--accent);border-bottom-color:var(--accent);opacity:1}
+.room-tab.done{color:var(--green);opacity:.8}
+.room-tab i{font-size:13px}
+
+/* ══ MAIN ════════════════════════════════════════════════════ */
+.main{flex:1;padding:32px 40px;max-width:900px;margin:0 auto;width:100%}
+
+/* ══ ROOM ════════════════════════════════════════════════════ */
+.room{display:none;animation:fadeUp .5s ease}
+.room.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══ ROOM HEADER ═════════════════════════════════════════════ */
+.room-header{margin-bottom:28px}
+.room-label{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:3px;margin-bottom:6px}
+.room-title{font-size:28px;font-weight:700;color:var(--text);margin-bottom:10px}
+.room-desc{font-size:15px;color:var(--sec);line-height:1.8;background:var(--card);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 var(--rl) var(--rl) 0;padding:16px 20px}
+.room-desc strong{color:var(--text)}
+
+/* ══ PROGRESS ════════════════════════════════════════════════ */
+.room-progress{margin-bottom:24px}
+.rp-top{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:6px}
+.prog-bar{background:var(--bg);border-radius:4px;height:5px;overflow:hidden}
+.prog-fill{height:100%;background:var(--accent);border-radius:4px;transition:width .6s ease}
+
+/* ══ STEP ════════════════════════════════════════════════════ */
+.step{background:var(--card);border:1px solid var(--border);border-radius:var(--rl);padding:26px;margin-bottom:20px;transition:border-color .2s}
+.step.solved{border-color:rgba(61,220,132,.3)}
+.step-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:16px}
+.step-num{font-family:var(--mono);font-size:11px;color:var(--accent);background:var(--accent-bg);border:1px solid rgba(77,159,255,.2);border-radius:4px;padding:4px 10px;flex-shrink:0;margin-top:3px;letter-spacing:1px}
+.step-title{font-size:18px;font-weight:600;color:var(--text)}
+.step-body{font-size:15px;color:var(--sec);line-height:1.85;margin-bottom:18px}
+
+/* ══ LOG BOX ═════════════════════════════════════════════════ */
+.logbox{background:var(--bg);border:1px solid #1a2a40;border-radius:var(--r);padding:14px 18px;font-family:var(--mono);margin:12px 0}
+.log-row{display:flex;gap:14px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.03);font-size:13px}
+.log-t{color:var(--dim);min-width:72px;flex-shrink:0}
+.log-m{color:var(--muted)}
+.log-m.e{color:var(--red)}.log-m.s{color:var(--green)}.log-m.w{color:var(--amber)}.log-m.i{color:var(--accent)}
+
+/* ══ OPTIONS ═════════════════════════════════════════════════ */
+.opts{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.opt{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r);padding:15px 18px;font-size:15px;color:var(--sec);cursor:pointer;transition:all .2s;line-height:1.6;display:flex;align-items:center;gap:14px}
+.opt::before{content:'';width:18px;height:18px;border-radius:50%;border:2px solid var(--bright);flex-shrink:0;transition:all .2s}
+.opt:hover:not(.dis){border-color:var(--accent);color:var(--text);background:var(--accent-bg)}
+.opt:hover:not(.dis)::before{border-color:var(--accent)}
+.opt.ok{border-color:var(--green);background:var(--green-bg);color:#7ee8a2}
+.opt.ok::before{border-color:var(--green);background:var(--green);box-shadow:inset 0 0 0 3px var(--card)}
+.opt.no{border-color:var(--red);background:var(--red-bg);color:var(--red);text-decoration:line-through;opacity:.5}
+.opt.dis{cursor:not-allowed}
+.opt.multi::before{border-radius:4px}
+.opt.multi.sel{border-color:var(--accent);background:var(--accent-bg);color:var(--text)}
+.opt.multi.sel::before{border-color:var(--accent);background:var(--accent);box-shadow:inset 0 0 0 3px var(--card)}
+
+/* ══ SORT ════════════════════════════════════════════════════ */
+.sort-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.sort-item{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r);padding:13px 16px;font-size:14px;color:var(--sec);display:flex;align-items:center;gap:12px;cursor:grab;transition:all .2s;user-select:none}
+.sort-item:hover{border-color:var(--bright);color:var(--text)}
+.sort-item.drag{opacity:.3;border-color:var(--accent)}
+.sort-item.over{border-color:var(--accent);background:var(--accent-bg)}
+.sort-handle{color:var(--dim);font-size:13px}
+.sort-n{font-family:var(--mono);font-size:11px;color:var(--dim);min-width:22px}
+
+/* ══ FEEDBACK ════════════════════════════════════════════════ */
+.fb{display:none;padding:14px 18px;border-radius:var(--r);font-size:14px;line-height:1.7;margin-bottom:12px;animation:slideDown .3s ease}
+.fb.show{display:block}
+.fb.ok{background:var(--green-bg);border:1px solid rgba(61,220,132,.2);color:#7ee8a2}
+.fb.no{background:var(--red-bg);border:1px solid rgba(255,77,109,.2);color:#ff8099}
+@keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══ HINT ════════════════════════════════════════════════════ */
+.hint-wrap{margin-top:12px}
+.hint-toggle{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;color:var(--amber);background:var(--amber-bg);border:1px solid rgba(255,181,71,.2);border-radius:5px;padding:6px 14px;cursor:pointer;transition:background .2s;user-select:none}
+.hint-toggle:hover{background:rgba(255,181,71,.18)}
+.hint-body{display:none;margin-top:10px;background:rgba(255,181,71,.06);border:1px solid rgba(255,181,71,.15);border-radius:var(--r);padding:14px 18px;font-size:14px;color:#d4a855;line-height:1.8;animation:slideDown .25s ease}
+.hint-body.open{display:block}
+.hint-body strong{color:var(--amber)}
+
+/* ══ SUBMIT ══════════════════════════════════════════════════ */
+.submit-btn{display:inline-flex;align-items:center;gap:8px;background:var(--accent-bg);border:1px solid var(--accent);border-radius:var(--r);color:var(--accent);font-family:var(--mono);font-size:13px;letter-spacing:1px;padding:10px 20px;cursor:pointer;transition:all .2s;margin-bottom:12px}
+.submit-btn:hover{background:rgba(77,159,255,.2)}
+.submit-btn:disabled{opacity:.35;cursor:not-allowed}
+
+/* ══ ROOM COMPLETE ═══════════════════════════════════════════ */
+.room-complete{display:none;background:var(--card);border:2px solid var(--green);border-radius:var(--rl);padding:28px;margin-top:24px;text-align:center}
+.rc-icon{font-size:48px;color:var(--green);margin-bottom:16px;animation:pulse-g 2s ease infinite}
+@keyframes pulse-g{0%,100%{opacity:1}50%{opacity:.6}}
+.rc-title{font-size:22px;font-weight:700;color:var(--green);margin-bottom:10px;font-family:var(--mono)}
+.rc-desc{font-size:15px;color:var(--sec);margin-bottom:20px;line-height:1.7}
+.rc-btn{display:inline-flex;align-items:center;gap:10px;background:var(--green-bg);border:1px solid var(--green);border-radius:var(--r);color:var(--green);font-family:var(--mono);font-size:14px;letter-spacing:1px;padding:12px 28px;cursor:pointer;transition:all .2s}
+.rc-btn:hover{background:rgba(61,220,132,.2)}
+
+/* ══ FINAL COMPLETE ══════════════════════════════════════════ */
+#final-complete{display:none;text-align:center;padding:60px 40px}
+.fc-title{font-family:var(--mono);font-size:36px;font-weight:700;color:var(--gold);margin-bottom:16px;text-shadow:0 0 32px rgba(255,215,0,.3);animation:glow-gold 2s ease infinite}
+@keyframes glow-gold{0%,100%{text-shadow:0 0 32px rgba(255,215,0,.3)}50%{text-shadow:0 0 64px rgba(255,215,0,.5)}}
+.fc-sub{font-size:18px;color:var(--sec);margin-bottom:40px}
+.fc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:500px;margin:0 auto 40px}
+.fc-stat{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.fc-stat-val{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--accent)}
+.fc-stat-label{font-size:12px;color:var(--muted);margin-top:4px}
+.fc-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* ══ MODAL ALARM ══════════════════════════════════════════ */
+#alarm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9000;display:none;align-items:center;justify-content:center;padding:2rem;animation:fadeIn .2s ease}
+#alarm-overlay.show{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.alarm-modal{background:#1a0510;border:2px solid var(--red);border-radius:var(--rl);padding:40px;max-width:520px;width:100%;text-align:center;animation:modalIn .3s ease;box-shadow:0 0 60px rgba(255,77,109,.3)}
+@keyframes modalIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.am-icon{font-size:56px;color:var(--red);margin-bottom:16px;animation:shake .4s ease infinite alternate}
+@keyframes shake{from{transform:rotate(-10deg) scale(1.1)}to{transform:rotate(10deg) scale(1.1)}}
+.am-title{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--red);margin-bottom:8px;letter-spacing:2px}
+.am-sub{font-size:15px;color:#cc8899;line-height:1.7;margin-bottom:24px}
+.am-close{background:var(--red-bg);border:1px solid var(--red);border-radius:var(--r);color:var(--red);font-family:var(--mono);font-size:14px;padding:12px 32px;cursor:pointer;transition:all .2s;letter-spacing:1px}
+.am-close:hover{background:rgba(255,77,109,.25)}
+
+code{background:rgba(255,255,255,.06);padding:1px 6px;border-radius:3px;font-family:var(--mono);font-size:13px;color:var(--sec)}
+</style>
+
+<!-- ══ INTRO ════════════════════════════════════════════════ -->
+<div id="intro">
+  <div class="intro-scanline"></div>
+  <div class="intro-box">
+    <div class="intro-titlebar">
+      <div class="itb-dot r"></div><div class="itb-dot a"></div><div class="itb-dot g"></div>
+      <span class="itb-label">CYBERCORE EMERGENCY RESPONSE TERMINAL</span>
+    </div>
+    <div class="intro-line" id="il0"><span class="ip">$</span><span class="idim">Initialisiere Notfallprotokoll...</span></div>
+    <div class="intro-line" id="il1"><span class="ip">!</span><span class="ir">KRITISCHER ALERT — FINANZNETZWERK KOMPROMITTIERT</span></div>
+    <div class="intro-line" id="il2"><span class="ip">$</span><span>Ziel: <span class="iw">EuroVault Central Banking Network</span> — 847 Institute betroffen</span></div>
+    <div class="intro-line" id="il3"><span class="ip">!</span><span class="iam">Angreifergruppe PHANTOM initiiert Massenüberweisung — <span class="iw">2,3 Mrd. €</span></span></div>
+    <div class="intro-line" id="il4"><span class="ip">$</span><span>Countdown aktiv — Überweisung in <span class="ir">45 Minuten</span> abgeschlossen</span></div>
+    <div class="intro-line" id="il5"><span class="ip">$</span><span>Verfügbare CyberCore-Analysten: <span class="ir">0</span> ... <span class="ig">1 Analyst online</span></span></div>
+    <div class="intro-line" id="il6"><span class="ip">></span><span class="iw">Du bist der Einzige. Stoppe PHANTOM. Rette das Geld.</span><span class="intro-cursor"></span></div>
+    <button id="intro-btn" onclick="startMission()"><i class="fa-solid fa-bolt"></i>&nbsp;&nbsp;MISSION ANNEHMEN</button>
+  </div>
+</div>
+
+<!-- ══ ALARM MODAL ════════════════════════════════════════ -->
+<div id="alarm-overlay">
+  <div class="alarm-modal">
+    <div class="am-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+    <div class="am-title">ANOMALIE ERKANNT</div>
+    <div class="am-sub">Das System registriert unkontrolliertes Klickverhalten.<br><br>
+    <strong style="color:var(--red)">PHANTOM ist auf deine Fehler angewiesen.</strong><br>
+    Jede falsche Eingabe gibt ihnen Zeit. Denk nach — dann klick.</div>
+    <button class="am-close" onclick="closeAlarm()"><i class="fa-solid fa-xmark"></i>&nbsp; Verstanden — ich denke nach</button>
+  </div>
+</div>
+
+<!-- ══ SHELL ══════════════════════════════════════════════ -->
+<div id="shell">
+  <div class="topbar">
+    <div class="tb-left">
+      <span class="tb-logo">HEIST.EXE</span>
+      <span class="tb-badge"><i class="fa-solid fa-circle-dot"></i> PHANTOM AKTIV</span>
+    </div>
+    <div class="tb-right">
+      <span class="tb-timer" id="timer">44:59</span>
+      <span class="tb-hints"><i class="fa-solid fa-lightbulb"></i> Hinweise: <span id="hint-total">0</span></span>
+      <button class="tb-reset" onclick="resetAll()"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+    </div>
+  </div>
+
+  <div class="room-nav" id="room-nav">
+    <div class="room-tab active" data-room="0" id="tab-0"><i class="fa-solid fa-terminal"></i> 01 INFILTRATION</div>
+    <div class="room-tab" data-room="1" id="tab-1"><i class="fa-solid fa-server"></i> 02 SERVER ROOM</div>
+    <div class="room-tab" data-room="2" id="tab-2"><i class="fa-solid fa-microchip"></i> 03 HARDWARE VAULT</div>
+    <div class="room-tab" data-room="3" id="tab-3"><i class="fa-solid fa-shield-halved"></i> 04 ACCESS CONTROL</div>
+    <div class="room-tab" data-room="4" id="tab-4"><i class="fa-solid fa-power-off"></i> 05 KILL SWITCH</div>
+  </div>
+
+  <div class="main">
+
+    <!-- ═══════════════════════════════════════════════════
+         ROOM 0 — INFILTRATION
+    ════════════════════════════════════════════════════ -->
+    <div class="room active" id="room-0">
+      <div class="room-header">
+        <div class="room-label">// RAUM 01 — INFILTRATION</div>
+        <div class="room-title">Zugang zum Bankensystem</div>
+        <div class="room-desc">Du versuchst dich in das EuroVault-System einzuloggen um PHANTOMs Spuren zu verfolgen. Das System fragt nach Authentifizierung. Du musst <strong>beweisen wer du bist</strong> — und verstehen wie Angreifer das ausnutzen.</div>
+      </div>
+      <div class="room-progress">
+        <div class="rp-top"><span>FORTSCHRITT</span><span id="rp0">0 / 5</span></div>
+        <div class="prog-bar"><div class="prog-fill" id="pf0" style="width:0%"></div></div>
+      </div>
+
+      <!-- S0.1 -->
+      <div class="step" id="s0-0">
+        <div class="step-header"><span class="step-num">01</span><div class="step-title">Was ist Informatik?</div></div>
+        <div class="step-body">Bevor du Zugang erhältst, prüft das System deine Grundlagen. EuroVault wurde von Informatik-Experten gebaut — du musst ihre Sprache sprechen.<br><br>Was beschreibt Informatik am genauesten?</div>
+        <div class="opts" data-s="0-0" data-type="single" data-ok="c">
+          <div class="opt" data-v="a">Die Lehre vom Umgang mit Computern, Handys und dem Internet.</div>
+          <div class="opt" data-v="b">Die Wissenschaft der elektrischen Schaltkreise und Chips.</div>
+          <div class="opt" data-v="c">Die Wissenschaft der <strong>systematischen und automatischen Verarbeitung von Informationen</strong>.</div>
+          <div class="opt" data-v="d">Die Entwicklung von Apps und Webseiten.</div>
+          <div class="opt" data-v="e">Die Mathematik der binären Zahlensysteme.</div>
+        </div>
+        <div class="fb" id="fb0-0"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h0-0')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h0-0">Informatik = <strong>INFORmation</strong> + Auto<strong>MATIK</strong>. Der Begriff selbst verrät die Definition.</div></div>
+      </div>
+
+      <!-- S0.2 -->
+      <div class="step" id="s0-1">
+        <div class="step-header"><span class="step-num">02</span><div class="step-title">Authentifizierung — drei Faktoren</div></div>
+        <div class="step-body">Das Login-System von EuroVault unterstützt mehrere Authentifizierungsmethoden. Alle lassen sich in drei Gruppen einteilen: <em>Wissen, Besitz</em> — und eine dritte. Welche?</div>
+        <div class="opts" data-s="0-1" data-type="single" data-ok="d">
+          <div class="opt" data-v="a">Verschlüsselung — Daten werden kodiert.</div>
+          <div class="opt" data-v="b">Protokoll — Regeln für die Kommunikation.</div>
+          <div class="opt" data-v="c">Autorisierung — Rechte werden geprüft.</div>
+          <div class="opt" data-v="d"><strong>Biometrie</strong> — persönliche Merkmale wie Fingerabdruck oder Augenscan.</div>
+          <div class="opt" data-v="e">Firewall — Schutz vor externen Angriffen.</div>
+        </div>
+        <div class="fb" id="fb0-1"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h0-1')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h0-1">Die drei Faktoren: etwas das du <strong>weißt</strong> (Passwort), etwas das du <strong>hast</strong> (Handy), etwas das du <strong>bist</strong> (?).</div></div>
+      </div>
+
+      <!-- S0.3 -->
+      <div class="step" id="s0-2">
+        <div class="step-header"><span class="step-num">03</span><div class="step-title">PHANTOMs Login — was passiert hier?</div></div>
+        <div class="step-body">Du findest PHANTOMs Einbruchspunkt in den Logs. Was zeigt dieser Ablauf?</div>
+        <div class="logbox">
+          <div class="log-row"><span class="log-t">03:12:04</span><span class="log-m e">LOGIN FAILED — user: vault_admin — wrong_password</span></div>
+          <div class="log-row"><span class="log-t">03:12:09</span><span class="log-m e">LOGIN FAILED — user: vault_admin — wrong_password</span></div>
+          <div class="log-row"><span class="log-t">03:12:15</span><span class="log-m e">LOGIN FAILED — user: vault_admin — wrong_password</span></div>
+          <div class="log-row"><span class="log-t">03:12:44</span><span class="log-m w">LOGIN SUCCESS — user: vault_admin</span></div>
+        </div>
+        <div class="opts" data-s="0-2" data-type="single" data-ok="b">
+          <div class="opt" data-v="a">PHANTOM hat das Passwort durch eine gefälschte E-Mail gestohlen.</div>
+          <div class="opt" data-v="b">PHANTOM hat durch <strong>wiederholtes Ausprobieren (Brute-Force)</strong> das Passwort erraten.</div>
+          <div class="opt" data-v="c">PHANTOM hat eine Sicherheitslücke in der Datenbank ausgenutzt.</div>
+          <div class="opt" data-v="d">PHANTOM hat den Netzwerkverkehr abgehört und das Passwort abgefangen.</div>
+          <div class="opt" data-v="e">PHANTOM hat einen Mitarbeiter manipuliert, das Passwort preiszugeben.</div>
+        </div>
+        <div class="fb" id="fb0-2"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h0-2')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h0-2">Dreimal falsch, dann richtig — kein Trick, kein Abfangen. Nur rohe Gewalt. <strong>Brute Force</strong> = so lange probieren bis es klappt.</div></div>
+      </div>
+
+      <!-- S0.4 -->
+      <div class="step" id="s0-3">
+        <div class="step-header"><span class="step-num">04</span><div class="step-title">Authentifizierung vs. Autorisierung</div></div>
+        <div class="step-body">PHANTOM ist eingeloggt. Im Log erscheint: <code style="color:var(--red)">ACCESS /transfer/execute — FORBIDDEN</code>. Was genau schlägt fehl?</div>
+        <div class="opts" data-s="0-3" data-type="single" data-ok="c">
+          <div class="opt" data-v="a">Die Authentifizierung — das Passwort wird nochmals geprüft.</div>
+          <div class="opt" data-v="b">Die Verbindung — der Server ist nicht erreichbar.</div>
+          <div class="opt" data-v="c">Die <strong>Autorisierung</strong> — das Konto <code>vault_admin</code> hat keine Berechtigung für Überweisungen.</div>
+          <div class="opt" data-v="d">Die Verschlüsselung — die Daten sind nicht lesbar.</div>
+          <div class="opt" data-v="e">Das Betriebssystem — ein Kernel-Fehler blockiert die Anfrage.</div>
+        </div>
+        <div class="fb" id="fb0-3"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h0-3')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h0-3">Authentifizierung = <strong>Wer bin ich?</strong> (bereits erfolgreich). Autorisierung = <strong>Was darf ich?</strong> (das scheitert hier).</div></div>
+      </div>
+
+      <!-- S0.5 -->
+      <div class="step" id="s0-4">
+        <div class="step-header"><span class="step-num">05</span><div class="step-title">Schwaches Passwort — Analyse</div></div>
+        <div class="step-body">Das Passwort von <code>vault_admin</code> war <code>EuroVault2024!</code>. Welches Passwort wäre <strong>am schwersten zu knacken</strong> gewesen?</div>
+        <div class="opts" data-s="0-4" data-type="single" data-ok="e">
+          <div class="opt" data-v="a"><code>admin123</code> — kurz, überall verwendet</div>
+          <div class="opt" data-v="b"><code>Frankfurt2024!</code> — Stadtname + Jahr</div>
+          <div class="opt" data-v="c"><code>P@ssw0rt</code> — klassische Ersetzungen</div>
+          <div class="opt" data-v="d"><code>MeineBank#1</code> — persönlicher Bezug</div>
+          <div class="opt" data-v="e"><code>Kaffee!Satellit99#Nebel</code> — drei zufällige Wörter, Sonderzeichen, Zahl</div>
+        </div>
+        <div class="fb" id="fb0-4"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h0-4')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h0-4">Wörterbuch-Einträge, Städte und Jahreszahlen kennen alle Angreifer. Was ist lang, zufällig und trotzdem merkbar?</div></div>
+      </div>
+
+      <div class="room-complete" id="rc-0">
+        <div class="rc-icon"><i class="fa-solid fa-door-open"></i></div>
+        <div class="rc-title">ZUGANG GEWÄHRT</div>
+        <div class="rc-desc">Authentifizierung erfolgreich. Du bist im System.<br>PHANTOM hat sich in den Server Room zurückgezogen.</div>
+        <button class="rc-btn" onclick="nextRoom(1)"><i class="fa-solid fa-arrow-right"></i>&nbsp; Server Room betreten</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════
+         ROOM 1 — SERVER ROOM
+    ════════════════════════════════════════════════════ -->
+    <div class="room" id="room-1">
+      <div class="room-header">
+        <div class="room-label">// RAUM 02 — SERVER ROOM</div>
+        <div class="room-title">Auf den Servern von EuroVault</div>
+        <div class="room-desc">Du bist jetzt auf dem zentralen Server. PHANTOM hat hier Spuren hinterlassen. Du musst verstehen wie Daten <strong>verarbeitet, übertragen und gespeichert</strong> werden — und wie der Server mit dir als Client kommuniziert.</div>
+      </div>
+      <div class="room-progress">
+        <div class="rp-top"><span>FORTSCHRITT</span><span id="rp1">0 / 5</span></div>
+        <div class="prog-bar"><div class="prog-fill" id="pf1" style="width:0%"></div></div>
+      </div>
+
+      <!-- S1.1 -->
+      <div class="step" id="s1-0">
+        <div class="step-header"><span class="step-num">01</span><div class="step-title">EVA-Prinzip — Reihenfolge</div></div>
+        <div class="step-body">PHANTOMs Angriff folgt dem EVA-Prinzip. Sortiere die Schritte in die <strong>richtige Reihenfolge</strong>.</div>
+        <div class="sort-list" id="sort1-0">
+          <div class="sort-item" data-order="3"><span class="sort-handle"><i class="fa-solid fa-grip-vertical"></i></span><span class="sort-n">?</span><span><strong>Ausgabe</strong> — Das System bestätigt die Überweisung auf dem Bildschirm</span></div>
+          <div class="sort-item" data-order="1"><span class="sort-handle"><i class="fa-solid fa-grip-vertical"></i></span><span class="sort-n">?</span><span><strong>Eingabe</strong> — PHANTOM gibt Kontonummer und Betrag ein</span></div>
+          <div class="sort-item" data-order="4"><span class="sort-handle"><i class="fa-solid fa-grip-vertical"></i></span><span class="sort-n">?</span><span><strong>Speicherung</strong> — Die Transaktion wird in der Datenbank gespeichert</span></div>
+          <div class="sort-item" data-order="2"><span class="sort-handle"><i class="fa-solid fa-grip-vertical"></i></span><span class="sort-n">?</span><span><strong>Verarbeitung</strong> — Der Server prüft Kontodeckung und führt die Buchung aus</span></div>
+        </div>
+        <button class="submit-btn" id="sb1-0" onclick="checkSort('1-0',[1,2,3,4])"><i class="fa-solid fa-check"></i> Reihenfolge prüfen</button>
+        <div class="fb" id="fb1-0"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h1-0')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h1-0">EVA(S) = <strong>E</strong>ingabe → <strong>V</strong>erarbeitung → <strong>A</strong>usgabe → <strong>S</strong>peicherung. Was muss logisch zuerst passieren?</div></div>
+      </div>
+
+      <!-- S1.2 -->
+      <div class="step" id="s1-1">
+        <div class="step-header"><span class="step-num">02</span><div class="step-title">Client-Server — Grundprinzip</div></div>
+        <div class="step-body">Du verbindest dich vom Analyse-Terminal auf den EuroVault-Server. Was beschreibt das <strong>Client-Server-Prinzip</strong> am besten?</div>
+        <div class="opts" data-s="1-1" data-type="single" data-ok="b">
+          <div class="opt" data-v="a">Alle Computer sind gleichberechtigt und tauschen direkt Daten aus.</div>
+          <div class="opt" data-v="b">Ein <strong>Server</strong> stellt Dienste und Ressourcen bereit — ein <strong>Client</strong> stellt Anfragen und nutzt diese Dienste.</div>
+          <div class="opt" data-v="c">Der Client speichert alle Daten, der Server verarbeitet sie.</div>
+          <div class="opt" data-v="d">Server und Client sind immer am selben physischen Ort.</div>
+          <div class="opt" data-v="e">Ein Client kann nur mit einem einzigen Server kommunizieren.</div>
+        </div>
+        <div class="fb" id="fb1-1"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h1-1')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h1-1">Denk an einen Kellner (Server = Bedienung) und Gast (Client). Wer fragt, wer liefert? <strong>Client fragt, Server antwortet.</strong></div></div>
+      </div>
+
+      <!-- S1.3 -->
+      <div class="step" id="s1-2">
+        <div class="step-header"><span class="step-num">03</span><div class="step-title">Was macht der Server — was der Client?</div></div>
+        <div class="step-body">Welche der folgenden Aussagen über Client-Server-Systeme sind <strong>korrekt</strong>? Wähle alle richtigen aus.</div>
+        <div class="opts" data-s="1-2" data-type="multi" data-ok="a,c,e">
+          <div class="opt multi" data-v="a">Ein Server kann <strong>viele Clients gleichzeitig</strong> bedienen.</div>
+          <div class="opt multi" data-v="b">Der Client speichert immer alle Daten lokal — der Server ist nur Durchgangsstation.</div>
+          <div class="opt multi" data-v="c">Der Webbrowser auf deinem PC ist ein typischer <strong>Client</strong>.</div>
+          <div class="opt multi" data-v="d">Server müssen immer teurer sein als Clients.</div>
+          <div class="opt multi" data-v="e">Ein Server läuft <strong>kontinuierlich</strong> und wartet auf Anfragen von Clients.</div>
+        </div>
+        <button class="submit-btn" id="sb1-2" onclick="checkMulti('1-2',['a','c','e'])"><i class="fa-solid fa-check"></i> Auswahl prüfen</button>
+        <div class="fb" id="fb1-2"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h1-2')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h1-2">Server = <strong>immer an</strong>, wartet auf Anfragen, bedient viele. Client = stellt Anfragen, nutzt Dienste. Beispiel: Netflix-Server vs. dein Browser.</div></div>
+      </div>
+
+      <!-- S1.4 -->
+      <div class="step" id="s1-3">
+        <div class="step-header"><span class="step-num">04</span><div class="step-title">Software-Klassifikation</div></div>
+        <div class="step-body">PHANTOM hat die Systemsoftware des Servers manipuliert. Was ist der Unterschied zwischen <strong>Systemsoftware</strong> und <strong>Anwendungssoftware</strong>?</div>
+        <div class="opts" data-s="1-3" data-type="single" data-ok="a">
+          <div class="opt" data-v="a">Systemsoftware ist der <strong>Vermittler zwischen Hardware und Anwendungen</strong> — startet automatisch beim Booten. Anwendungssoftware erfüllt konkrete Nutzeraufgaben und wird bei Bedarf gestartet.</div>
+          <div class="opt" data-v="b">Systemsoftware kostet Geld, Anwendungssoftware ist kostenlos.</div>
+          <div class="opt" data-v="c">Systemsoftware läuft nur auf Servern, Anwendungssoftware nur auf PCs.</div>
+          <div class="opt" data-v="d">Systemsoftware wird vom Nutzer installiert, Anwendungssoftware ist vorinstalliert.</div>
+          <div class="opt" data-v="e">Es gibt keinen wesentlichen Unterschied — alle Software arbeitet gleich.</div>
+        </div>
+        <div class="fb" id="fb1-3"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h1-3')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h1-3">Systemsoftware = Betriebssystem, Treiber — läuft im Hintergrund. Anwendungssoftware = Word, Browser, Spiele — startest du selbst.</div></div>
+      </div>
+
+      <!-- S1.5 -->
+      <div class="step" id="s1-4">
+        <div class="step-header"><span class="step-num">05</span><div class="step-title">Gerätetreiber — wozu?</div></div>
+        <div class="step-body">Du versuchst ein Analysegerät an den Server anzuschließen — es funktioniert nicht. Das System meldet: <code>DRIVER NOT FOUND</code>. Was bedeutet das?</div>
+        <div class="opts" data-s="1-4" data-type="single" data-ok="c">
+          <div class="opt" data-v="a">Das Gerät ist defekt und muss ersetzt werden.</div>
+          <div class="opt" data-v="b">Der Server hat zu wenig RAM um das Gerät zu betreiben.</div>
+          <div class="opt" data-v="c">Es fehlt die <strong>Treiber-Software</strong> — das Betriebssystem kann ohne sie nicht mit dem Gerät kommunizieren.</div>
+          <div class="opt" data-v="d">Die Firewall blockiert das Gerät aus Sicherheitsgründen.</div>
+          <div class="opt" data-v="e">Das Betriebssystem muss neu gestartet werden.</div>
+        </div>
+        <div class="fb" id="fb1-4"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h1-4')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h1-4">Ein Treiber ist eine Software die dem Betriebssystem erklärt <strong>wie es mit einem bestimmten Gerät sprechen soll</strong>. Ohne Treiber — kein Dialog möglich.</div></div>
+      </div>
+
+      <div class="room-complete" id="rc-1">
+        <div class="rc-icon"><i class="fa-solid fa-server"></i></div>
+        <div class="rc-title">SERVER ANALYSIERT</div>
+        <div class="rc-desc">Du hast PHANTOMs Spur im Server Room verfolgt.<br>Nächstes Ziel: die physische Hardware.</div>
+        <button class="rc-btn" onclick="nextRoom(2)"><i class="fa-solid fa-arrow-right"></i>&nbsp; Hardware Vault betreten</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════
+         ROOM 2 — HARDWARE VAULT
+    ════════════════════════════════════════════════════ -->
+    <div class="room" id="room-2">
+      <div class="room-header">
+        <div class="room-label">// RAUM 03 — HARDWARE VAULT</div>
+        <div class="room-title">Physische Infrastruktur</div>
+        <div class="room-desc">PHANTOM hat gezielt Hardware-Schwachstellen ausgenutzt. Du analysierst die physische Infrastruktur von EuroVault — <strong>CPU, Speicher, Festplatten</strong>. Nur wer die Hardware versteht, kann den Angriff vollständig verstehen.</div>
+      </div>
+      <div class="room-progress">
+        <div class="rp-top"><span>FORTSCHRITT</span><span id="rp2">0 / 5</span></div>
+        <div class="prog-bar"><div class="prog-fill" id="pf2" style="width:0%"></div></div>
+      </div>
+
+      <!-- S2.1 -->
+      <div class="step" id="s2-0">
+        <div class="step-header"><span class="step-num">01</span><div class="step-title">CPU — das Gehirn des Servers</div></div>
+        <div class="step-body">Der EuroVault-Server hat eine CPU mit <strong>3,8 GHz Taktfrequenz</strong>. Was sagt dieser Wert genau aus?</div>
+        <div class="opts" data-s="2-0" data-type="single" data-ok="b">
+          <div class="opt" data-v="a">Der Prozessor hat 3,8 Gigabyte Arbeitsspeicher integriert.</div>
+          <div class="opt" data-v="b">Der Prozessor kann <strong>3,8 Milliarden Arbeitsschritte pro Sekunde</strong> ausführen.</div>
+          <div class="opt" data-v="c">Der Prozessor läuft mit 3,8 Gigabyte Daten gleichzeitig.</div>
+          <div class="opt" data-v="d">Der Prozessor hat eine Leistungsaufnahme von 3,8 Gigawatt.</div>
+          <div class="opt" data-v="e">Der Prozessor kann 3,8 Milliarden Bytes pro Sekunde speichern.</div>
+        </div>
+        <div class="fb" id="fb2-0"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h2-0')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h2-0"><strong>Hertz = Schwingungen pro Sekunde</strong> = Arbeitsschritte pro Sekunde. 1 GHz = 1 Milliarde. Also: 3,8 GHz = ?</div></div>
+      </div>
+
+      <!-- S2.2 -->
+      <div class="step" id="s2-1">
+        <div class="step-header"><span class="step-num">02</span><div class="step-title">RAM vs. Festplatte</div></div>
+        <div class="step-body">PHANTOM hat gezielt den RAM des Servers überlastet. Was ist der entscheidende Unterschied zwischen <strong>RAM</strong> und <strong>Festplatte</strong>?</div>
+        <div class="opts" data-s="2-1" data-type="single" data-ok="d">
+          <div class="opt" data-v="a">RAM ist schneller als die Festplatte — sonst gibt es keinen Unterschied.</div>
+          <div class="opt" data-v="b">RAM speichert dauerhaft, die Festplatte nur temporär.</div>
+          <div class="opt" data-v="c">RAM ist für Bilder, die Festplatte für Texte.</div>
+          <div class="opt" data-v="d">RAM ist <strong>flüchtiger Speicher</strong> — beim Ausschalten gelöscht, nur für aktive Programme. Die Festplatte ist <strong>dauerhafter Speicher</strong> für Dateien und Programme.</div>
+          <div class="opt" data-v="e">RAM ist extern, die Festplatte ist intern eingebaut.</div>
+        </div>
+        <div class="fb" id="fb2-1"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h2-1')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h2-1">RAM = <strong>flüchtig</strong> (beim Ausschalten weg) = für aktive Programme. Festplatte = <strong>dauerhaft</strong> = für gespeicherte Dateien.</div></div>
+      </div>
+
+      <!-- S2.3 -->
+      <div class="step" id="s2-2">
+        <div class="step-header"><span class="step-num">03</span><div class="step-title">HDD vs. SSD</div></div>
+        <div class="step-body">EuroVault hat einen Hybrid-Speicher: 2 TB HDD + 500 GB SSD. PHANTOM hat gezielt die SSD angegriffen. Warum könnte das strategisch sinnvoll sein?</div>
+        <div class="opts" data-s="2-2" data-type="single" data-ok="c">
+          <div class="opt" data-v="a">Weil die SSD günstiger ist und daher mehr Daten hat.</div>
+          <div class="opt" data-v="b">Weil die SSD aus Magnetscheiben besteht die leichter zu manipulieren sind.</div>
+          <div class="opt" data-v="c">Weil auf der SSD das <strong>Betriebssystem und kritische Programme</strong> installiert sind — ein Angriff darauf lähmt das gesamte System.</div>
+          <div class="opt" data-v="d">Weil die SSD eine WLAN-Verbindung hat die anfälliger für Angriffe ist.</div>
+          <div class="opt" data-v="e">Weil die SSD immer im Internet angebunden ist.</div>
+        </div>
+        <div class="fb" id="fb2-2"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h2-2')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h2-2">SSDs werden empfohlen für: <strong>Betriebssysteme und wichtige Programme</strong>. HDDs für: große Datenmengen. Was passiert wenn das Betriebssystem ausfällt?</div></div>
+      </div>
+
+      <!-- S2.4 -->
+      <div class="step" id="s2-3">
+        <div class="step-header"><span class="step-num">04</span><div class="step-title">Mainboard — was verbindet alles?</div></div>
+        <div class="step-body">Du öffnest das Server-Gehäuse. Welche Aussagen über das <strong>Mainboard</strong> sind korrekt? Wähle alle richtigen aus.</div>
+        <div class="opts" data-s="2-3" data-type="multi" data-ok="a,c,d">
+          <div class="opt multi" data-v="a">Das Mainboard ist die <strong>zentrale Hauptplatine</strong> auf der CPU, RAM und andere Komponenten montiert sind.</div>
+          <div class="opt multi" data-v="b">Das Mainboard speichert alle Benutzerdaten dauerhaft.</div>
+          <div class="opt multi" data-v="c">Viele frühere Einzelkomponenten wie Soundkarten sind heute <strong>direkt ins Mainboard integriert</strong>.</div>
+          <div class="opt multi" data-v="d">Über <strong>PCI-Steckplätze</strong> können zusätzliche Karten wie Grafik- oder Soundkarten angeschlossen werden.</div>
+          <div class="opt multi" data-v="e">Das Mainboard kann ohne Netzteil dauerhaft Strom liefern.</div>
+        </div>
+        <button class="submit-btn" id="sb2-3" onclick="checkMulti('2-3',['a','c','d'])"><i class="fa-solid fa-check"></i> Auswahl prüfen</button>
+        <div class="fb" id="fb2-3"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h2-3')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h2-3">Mainboard = <strong>Hauptplatine</strong> — verbindet alles. Früher gab es separate Sound- und Netzwerkkarten, heute meist integriert. PCI = Erweiterungsschnittstelle.</div></div>
+      </div>
+
+      <!-- S2.5 -->
+      <div class="step" id="s2-4">
+        <div class="step-header"><span class="step-num">05</span><div class="step-title">RAM-Kapazität — wer braucht was?</div></div>
+        <div class="step-body">Der Bank-Server soll aufgerüstet werden. Wie viel RAM wird für <strong>professionelle Server-Anwendungen und 3D-Modellierung</strong> mindestens empfohlen?</div>
+        <div class="opts" data-s="2-4" data-type="single" data-ok="d">
+          <div class="opt" data-v="a">4 GB — reicht für alle Anwendungsfälle.</div>
+          <div class="opt" data-v="b">8 GB — Standard für allgemeine Nutzung wie Surfen und E-Mails.</div>
+          <div class="opt" data-v="c">16 GB — für Multitasking und Multimedia.</div>
+          <div class="opt" data-v="d"><strong>32 GB oder mehr</strong> — für professionelle Anwendungen, Spiele mit hoher Grafik, 3D-Modellierung und Server.</div>
+          <div class="opt" data-v="e">2 GB — Server brauchen wenig RAM da sie nur Daten weiterleiten.</div>
+        </div>
+        <div class="fb" id="fb2-4"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h2-4')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h2-4">Faustregel: <strong>8 GB</strong> für normale Nutzung, <strong>16 GB</strong> für Multimedia, <strong>32 GB+</strong> für alles Professionelle. Server brauchen viel RAM für viele gleichzeitige Anfragen.</div></div>
+      </div>
+
+      <div class="room-complete" id="rc-2">
+        <div class="rc-icon"><i class="fa-solid fa-microchip"></i></div>
+        <div class="rc-title">HARDWARE ANALYSIERT</div>
+        <div class="rc-desc">Du kennst die Schwachstellen der physischen Infrastruktur.<br>Jetzt geht es um Zugriffsrechte — PHANTOMs letztes Schutzschild.</div>
+        <button class="rc-btn" onclick="nextRoom(3)"><i class="fa-solid fa-arrow-right"></i>&nbsp; Access Control betreten</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════
+         ROOM 3 — ACCESS CONTROL
+    ════════════════════════════════════════════════════ -->
+    <div class="room" id="room-3">
+      <div class="room-header">
+        <div class="room-label">// RAUM 04 — ACCESS CONTROL</div>
+        <div class="room-title">Zugriffsrechte & Datenschutz</div>
+        <div class="room-desc">PHANTOM hat sich Rechte verschafft die ihnen nicht zustehen. Du analysierst das Rechtesystem von EuroVault — und verstehst warum <strong>Datenschutz und Datensicherheit</strong> hier eine Rolle spielen.</div>
+      </div>
+      <div class="room-progress">
+        <div class="rp-top"><span>FORTSCHRITT</span><span id="rp3">0 / 5</span></div>
+        <div class="prog-bar"><div class="prog-fill" id="pf3" style="width:0%"></div></div>
+      </div>
+
+      <!-- S3.1 -->
+      <div class="step" id="s3-0">
+        <div class="step-header"><span class="step-num">01</span><div class="step-title">Privilege Escalation</div></div>
+        <div class="step-body">Im Log steht: <code style="color:var(--amber)">PRIVILEGE ESCALATION — vault_admin → root</code>. Was bedeutet das?</div>
+        <div class="opts" data-s="3-0" data-type="single" data-ok="b">
+          <div class="opt" data-v="a">PHANTOM hat ein neues Konto mit dem Namen „root" erstellt.</div>
+          <div class="opt" data-v="b">PHANTOM hat sich vom normalen Admin-Konto aus <strong>höhere Systemrechte verschafft</strong> — root hat uneingeschränkten Zugriff auf alles.</div>
+          <div class="opt" data-v="c">Das System hat PHANTOM automatisch mit mehr Rechten ausgestattet.</div>
+          <div class="opt" data-v="d">PHANTOM hat das root-Passwort durch Brute-Force erraten.</div>
+          <div class="opt" data-v="e">Root ist ein normaler Benutzer mit Standardrechten.</div>
+        </div>
+        <div class="fb" id="fb3-0"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h3-0')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h3-0"><strong>Privilege</strong> = Berechtigung. <strong>Escalation</strong> = Steigerung. <strong>Root</strong> = Superuser auf Linux — darf buchstäblich alles, keine Einschränkungen.</div></div>
+      </div>
+
+      <!-- S3.2 -->
+      <div class="step" id="s3-1">
+        <div class="step-header"><span class="step-num">02</span><div class="step-title">Zugriffsrechte — welche gibt es?</div></div>
+        <div class="step-body">Du überprüfst das Rechtesystem von EuroVault. Welche der folgenden sind <strong>echte Zugriffsberechtigungen</strong>? Wähle alle richtigen aus.</div>
+        <div class="opts" data-s="3-1" data-type="multi" data-ok="a,b,d">
+          <div class="opt multi" data-v="a"><strong>Lesen (Read)</strong> — Dateien ansehen, aber nicht verändern.</div>
+          <div class="opt multi" data-v="b"><strong>Schreiben (Write)</strong> — Dateien ansehen und verändern.</div>
+          <div class="opt multi" data-v="c"><strong>Drucken (Print)</strong> — Dateien ausgeben.</div>
+          <div class="opt multi" data-v="d"><strong>Vollzugriff</strong> — alle Rechte plus die Möglichkeit, Rechte an andere zu übertragen.</div>
+          <div class="opt multi" data-v="e"><strong>Verstecken (Hide)</strong> — Dateien für andere unsichtbar machen.</div>
+        </div>
+        <button class="submit-btn" id="sb3-1" onclick="checkMulti('3-1',['a','b','d'])"><i class="fa-solid fa-check"></i> Auswahl prüfen</button>
+        <div class="fb" id="fb3-1"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h3-1')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h3-1">Klassische Dateisystemrechte: <strong>r</strong>ead, <strong>w</strong>rite, e<strong>x</strong>ecute — und Vollzugriff mit Rechteweitergabe.</div></div>
+      </div>
+
+      <!-- S3.3 -->
+      <div class="step" id="s3-2">
+        <div class="step-header"><span class="step-num">03</span><div class="step-title">Datensicherheit vs. Datenschutz</div></div>
+        <div class="step-body">PHANTOM hat 2,3 Mrd. € Kundendaten missbraucht. In deinem Bericht schreibst du: <em>„Sowohl Datensicherheit als auch Datenschutz wurden verletzt."</em> Was ist der Unterschied?</div>
+        <div class="opts" data-s="3-2" data-type="single" data-ok="c">
+          <div class="opt" data-v="a">Datensicherheit schützt Passwörter, Datenschutz schützt Dateien.</div>
+          <div class="opt" data-v="b">Datenschutz ist ein technisches Konzept, Datensicherheit ist rechtlich.</div>
+          <div class="opt" data-v="c"><strong>Datensicherheit</strong> schützt Daten vor technischen Angriffen (Vertraulichkeit, Integrität, Verfügbarkeit). <strong>Datenschutz</strong> schützt Personen vor Missbrauch ihrer personenbezogenen Daten — rechtlich durch die DSGVO.</div>
+          <div class="opt" data-v="d">Es gibt keinen Unterschied — beide Begriffe bedeuten dasselbe.</div>
+          <div class="opt" data-v="e">Datensicherheit gilt für Unternehmen, Datenschutz nur für Privatpersonen.</div>
+        </div>
+        <div class="fb" id="fb3-2"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h3-2')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h3-2"><strong>Datensicherheit</strong> = technisch (Firewall, Verschlüsselung, Backup). <strong>Datenschutz</strong> = rechtlich (DSGVO, Privatheit von Personen).</div></div>
+      </div>
+
+      <!-- S3.4 -->
+      <div class="step" id="s3-3">
+        <div class="step-header"><span class="step-num">04</span><div class="step-title">Reihenfolge — Incident Response</div></div>
+        <div class="step-body">Der Angriff ist entdeckt. <strong>Sortiere die Maßnahmen nach richtiger Priorität</strong> — dringendste zuerst.</div>
+        <div class="sort-list" id="sort3-3">
+          <div class="sort-item" data-order="3"><span class="sort-handle"><i class="fa-solid fa-grip-vertical"></i></span><span class="sort-n">?</span><span>2FA für alle Admin-Konten einrichten und Passwortrichtlinien verschärfen</span></div>
+          <div class="sort-item" data-order="1"><span class="sort-handle"><i class="fa-solid fa-grip-vertical"></i></span><span class="sort-n">?</span><span>Kompromittiertes System sofort isolieren — alle Passwörter ändern</span></div>
+          <div class="sort-item" data-order="4"><span class="sort-handle"><i class="fa-solid fa-grip-vertical"></i></span><span class="sort-n">?</span><span>Mitarbeiterschulung zu Sicherheitsregeln und Passwortrichtlinien</span></div>
+          <div class="sort-item" data-order="2"><span class="sort-handle"><i class="fa-solid fa-grip-vertical"></i></span><span class="sort-n">?</span><span>Logs vollständig analysieren — Ausmaß des Schadens dokumentieren</span></div>
+        </div>
+        <button class="submit-btn" id="sb3-3" onclick="checkSort('3-3',[1,2,3,4])"><i class="fa-solid fa-check"></i> Reihenfolge prüfen</button>
+        <div class="fb" id="fb3-3"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h3-3')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h3-3">Feuerwehr-Prinzip: erst <strong>Feuer löschen</strong>, dann <strong>Schaden begutachten</strong>, dann <strong>Ursache beheben</strong>, dann <strong>Prävention</strong>.</div></div>
+      </div>
+
+      <!-- S3.5 -->
+      <div class="step" id="s3-4">
+        <div class="step-header"><span class="step-num">05</span><div class="step-title">2FA — warum hätte es geholfen?</div></div>
+        <div class="step-body">Hätte Zwei-Faktor-Authentifizierung (2FA) den PHANTOM-Angriff verhindert? Was ist das Grundprinzip von 2FA?</div>
+        <div class="opts" data-s="3-4" data-type="single" data-ok="c">
+          <div class="opt" data-v="a">Man braucht zwei verschiedene Passwörter nacheinander.</div>
+          <div class="opt" data-v="b">Das Passwort wird doppelt verschlüsselt gespeichert.</div>
+          <div class="opt" data-v="c">Zusätzlich zum Passwort braucht man einen <strong>zweiten unabhängigen Faktor</strong> — z.B. einen Einmal-Code aufs Handy. Selbst mit gestohlenem Passwort kommt PHANTOM nicht rein.</div>
+          <div class="opt" data-v="d">Man muss sich von zwei Geräten gleichzeitig einloggen.</div>
+          <div class="opt" data-v="e">Das System schickt das Passwort per E-Mail zur Bestätigung zurück.</div>
+        </div>
+        <div class="fb" id="fb3-4"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h3-4')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h3-4">2FA = zwei <em>verschiedene</em> Faktoren. Faktor 1: <strong>Wissen</strong> (Passwort). Faktor 2: <strong>Besitz</strong> (Handy) oder <strong>Biometrie</strong>. Beide müssen stimmen.</div></div>
+      </div>
+
+      <div class="room-complete" id="rc-3">
+        <div class="rc-icon"><i class="fa-solid fa-shield-check"></i></div>
+        <div class="rc-title">ZUGRIFF GESICHERT</div>
+        <div class="rc-desc">PHANTOMs Rechte sind entzogen. Ein letzter Schritt fehlt noch.<br>Der Kill Switch wartet auf dich.</div>
+        <button class="rc-btn" onclick="nextRoom(4)"><i class="fa-solid fa-arrow-right"></i>&nbsp; Kill Switch aktivieren</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════
+         ROOM 4 — KILL SWITCH
+    ════════════════════════════════════════════════════ -->
+    <div class="room" id="room-4">
+      <div class="room-header">
+        <div class="room-label">// RAUM 05 — KILL SWITCH</div>
+        <div class="room-title">Überweisung stoppen</div>
+        <div class="room-desc">Finale Phase. Die Überweisung läuft noch. Du musst <strong>alles zusammenbringen</strong> was du gelernt hast — und PHANTOMs letzten Trick durchschauen bevor es zu spät ist.</div>
+      </div>
+      <div class="room-progress">
+        <div class="rp-top"><span>FORTSCHRITT</span><span id="rp4">0 / 5</span></div>
+        <div class="prog-bar"><div class="prog-fill" id="pf4" style="width:0%"></div></div>
+      </div>
+
+      <!-- S4.1 -->
+      <div class="step" id="s4-0">
+        <div class="step-header"><span class="step-num">01</span><div class="step-title">Informatiksystem — Komponenten</div></div>
+        <div class="step-body">PHANTOM hat ein komplettes Informatiksystem kompromittiert. Was gehört zu einem Informatiksystem? Wähle alle richtigen Antworten.</div>
+        <div class="opts" data-s="4-0" data-type="multi" data-ok="a,b,d">
+          <div class="opt multi" data-v="a"><strong>Hardware</strong> — alle physischen Bauteile wie Prozessor, Speicher, Peripheriegeräte.</div>
+          <div class="opt multi" data-v="b"><strong>Software</strong> — Programme und Daten die auf der Hardware ausgeführt werden.</div>
+          <div class="opt multi" data-v="c">Das Gebäude in dem die Server stehen.</div>
+          <div class="opt multi" data-v="d"><strong>Netzwerkgeräte</strong> — Router, Switches, die Kommunikation zwischen Systemen ermöglichen.</div>
+          <div class="opt multi" data-v="e">Der Strom aus der Steckdose.</div>
+        </div>
+        <button class="submit-btn" id="sb4-0" onclick="checkMulti('4-0',['a','b','d'])"><i class="fa-solid fa-check"></i> Auswahl prüfen</button>
+        <div class="fb" id="fb4-0"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h4-0')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h4-0">Informatiksystem = <strong>Hardware + Software</strong> — und alles was dazugehört um Daten zu verarbeiten und zu übertragen. Netzwerk ist Teil davon.</div></div>
+      </div>
+
+      <!-- S4.2 -->
+      <div class="step" id="s4-1">
+        <div class="step-header"><span class="step-num">02</span><div class="step-title">PHANTOMs Angriff — Gesamtbild</div></div>
+        <div class="step-body">Du rekonstruierst PHANTOMs kompletten Angriffspfad. <strong>Sortiere die Phasen in die richtige Reihenfolge.</strong></div>
+        <div class="sort-list" id="sort4-1">
+          <div class="sort-item" data-order="4"><span class="sort-handle"><i class="fa-solid fa-grip-vertical"></i></span><span class="sort-n">?</span><span><strong>Exfiltration</strong> — Überweisung von 2,3 Mrd. € wird initiiert</span></div>
+          <div class="sort-item" data-order="1"><span class="sort-handle"><i class="fa-solid fa-grip-vertical"></i></span><span class="sort-n">?</span><span><strong>Reconnaissance</strong> — PHANTOM analysiert das Zielsystem von außen</span></div>
+          <div class="sort-item" data-order="3"><span class="sort-handle"><i class="fa-solid fa-grip-vertical"></i></span><span class="sort-n">?</span><span><strong>Privilege Escalation</strong> — PHANTOM verschafft sich root-Rechte</span></div>
+          <div class="sort-item" data-order="2"><span class="sort-handle"><i class="fa-solid fa-grip-vertical"></i></span><span class="sort-n">?</span><span><strong>Initial Access</strong> — Brute-Force-Angriff auf vault_admin erfolgreich</span></div>
+        </div>
+        <button class="submit-btn" id="sb4-1" onclick="checkSort('4-1',[1,2,3,4])"><i class="fa-solid fa-check"></i> Reihenfolge prüfen</button>
+        <div class="fb" id="fb4-1"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h4-1')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h4-1">Jeder Angriff beginnt mit <strong>Aufklärung</strong>, dann <strong>Einbruch</strong>, dann <strong>Rechteausweitung</strong>, dann <strong>Ziel erreichen</strong>.</div></div>
+      </div>
+
+      <!-- S4.3 -->
+      <div class="step" id="s4-2">
+        <div class="step-header"><span class="step-num">03</span><div class="step-title">Von-Neumann — Universalrechner</div></div>
+        <div class="step-body">PHANTOMs Angriffscode läuft auf einem Von-Neumann-Rechner. Was war die revolutionäre Idee von John von Neumann?</div>
+        <div class="opts" data-s="4-2" data-type="single" data-ok="b">
+          <div class="opt" data-v="a">Computer sollen nur für einen einzigen Zweck gebaut werden — das macht sie effizienter.</div>
+          <div class="opt" data-v="b">Computer sollen <strong>universell programmierbar</strong> sein — durch Softwareänderung ohne Hardwareumbau. Programmbefehle und Daten liegen im selben Speicher.</div>
+          <div class="opt" data-v="c">Computer sollen miteinander vernetzt werden — das Internet war seine Idee.</div>
+          <div class="opt" data-v="d">Computer sollen mit Lochkarten programmiert werden — schneller als Tastatur.</div>
+          <div class="opt" data-v="e">Computer sollen nur von Wissenschaftlern benutzt werden dürfen.</div>
+        </div>
+        <div class="fb" id="fb4-2"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h4-2')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h4-2">Vor Von Neumann: für jede Aufgabe ein neuer Computer. Seine Idee: <strong>ein Universalrechner</strong> der durch Programme umprogrammiert wird — ohne Hardware zu ändern.</div></div>
+      </div>
+
+      <!-- S4.4 -->
+      <div class="step" id="s4-3">
+        <div class="step-header"><span class="step-num">04</span><div class="step-title">Von-Neumann — fünf Komponenten</div></div>
+        <div class="step-body">Der Kill Switch läuft auf Von-Neumann-Architektur. Welche <strong>fünf Komponenten</strong> hat ein Von-Neumann-Rechner? Wähle alle fünf richtigen aus.</div>
+        <div class="opts" data-s="4-3" data-type="multi" data-ok="a,b,c,d,e">
+          <div class="opt multi" data-v="a"><strong>Speicherwerk</strong> — speichert Befehle und Daten binär in durchnummerierten Zellen.</div>
+          <div class="opt multi" data-v="b"><strong>Rechenwerk</strong> — führt arithmetische und logische Berechnungen aus.</div>
+          <div class="opt multi" data-v="c"><strong>Steuerwerk</strong> — regelt die Befehlsabfolge und koordiniert alle Einheiten.</div>
+          <div class="opt multi" data-v="d"><strong>Bus-System</strong> — überträgt Daten zwischen den Komponenten.</div>
+          <div class="opt multi" data-v="e"><strong>Ein-/Ausgabewerk</strong> — steuert die Kommunikation mit Nutzer und externen Systemen.</div>
+        </div>
+        <button class="submit-btn" id="sb4-3" onclick="checkMulti('4-3',['a','b','c','d','e'])"><i class="fa-solid fa-check"></i> Auswahl prüfen</button>
+        <div class="fb" id="fb4-3"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h4-3')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h4-3">Alle fünf sind richtig! Speicher, Rechen, Steuer, Bus, Ein/Ausgabe — das sind <strong>alle</strong> Komponenten der Von-Neumann-Architektur.</div></div>
+      </div>
+
+      <!-- S4.5 -->
+      <div class="step" id="s4-4">
+        <div class="step-header"><span class="step-num">05</span><div class="step-title">KILL SWITCH — letzte Frage</div></div>
+        <div class="step-body">Du hast den Kill Switch erreicht. Eine letzte Sicherheitsfrage bevor du die Überweisung stoppst:<br><br>
+        <strong>Welche Kombination von Maßnahmen hätte PHANTOMs Angriff vollständig verhindert?</strong></div>
+        <div class="opts" data-s="4-4" data-type="single" data-ok="d">
+          <div class="opt" data-v="a">Bessere Hardware und schnellere Server.</div>
+          <div class="opt" data-v="b">Ein teureres Betriebssystem von einem anderen Hersteller.</div>
+          <div class="opt" data-v="c">Mehr RAM und eine schnellere SSD.</div>
+          <div class="opt" data-v="d"><strong>Starkes Passwort + 2FA + regelmäßige Log-Überwachung + Prinzip der minimalen Rechte</strong> — mehrere Schutzebenen gleichzeitig.</div>
+          <div class="opt" data-v="e">Das System komplett vom Internet trennen.</div>
+        </div>
+        <div class="fb" id="fb4-4"></div>
+        <div class="hint-wrap"><div class="hint-toggle" onclick="toggleHint('h4-4')"><i class="fa-solid fa-eye"></i> Hinweis</div><div class="hint-body" id="h4-4">IT-Sicherheit ist kein einzelnes Tool — es ist ein <strong>System aus mehreren Schutzebenen</strong>. Eine Schicht reicht nie.</div></div>
+      </div>
+
+      <div class="room-complete" id="rc-4">
+        <div class="rc-icon"><i class="fa-solid fa-bolt"></i></div>
+        <div class="rc-title">KILL SWITCH AKTIVIERT</div>
+        <div class="rc-desc">Überweisung gestoppt. PHANTOM neutralisiert.<br>2,3 Milliarden Euro gerettet.</div>
+        <button class="rc-btn" onclick="showFinal()"><i class="fa-solid fa-trophy"></i>&nbsp; Mission abschließen</button>
+      </div>
+    </div>
+
+    <!-- ═══ FINAL COMPLETE ══════════════════════════════ -->
+    <div id="final-complete">
+      <div class="fc-title">MISSION ACCOMPLISHED</div>
+      <div class="fc-sub">PHANTOM ist neutralisiert. EuroVault ist gerettet.<br>Du hast bewiesen: Wissen ist die stärkste Waffe.</div>
+      <div class="fc-stats">
+        <div class="fc-stat"><div class="fc-stat-val" id="fc-tasks">25/25</div><div class="fc-stat-label">Aufgaben gelöst</div></div>
+        <div class="fc-stat"><div class="fc-stat-val" id="fc-hints" style="color:var(--amber)">0</div><div class="fc-stat-label">Hinweise benutzt</div></div>
+        <div class="fc-stat"><div class="fc-stat-val" id="fc-time" style="color:var(--green)">--:--</div><div class="fc-stat-label">Zeit übrig</div></div>
+      </div>
+      <div class="fc-btns">
+        <button class="rc-btn" onclick="saveProgress()"><i class="fa-solid fa-floppy-disk"></i>&nbsp; Fortschritt speichern</button>
+        <button class="rc-btn" style="border-color:var(--amber);color:var(--amber);background:var(--amber-bg)" onclick="resetAll()"><i class="fa-solid fa-rotate-left"></i>&nbsp; Nochmal spielen</button>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+const SAVE_KEY='heist_v1';
+let state={solved:{},hints:0,hintsLog:[],unlockedRooms:[0],startTime:null,endTime:null};
+try{const s=localStorage.getItem(SAVE_KEY);if(s)state=JSON.parse(s);}catch(e){}
+
+let wrongStreak=0,alarmActive=false;
+let timerInterval=null;
+let timeLeft=45*60;
+
+// ── INTRO ────────────────────────────────────────────────
+function startMission(){
+  document.getElementById('intro').style.display='none';
+  const shell=document.getElementById('shell');
+  shell.style.display='flex';shell.style.flexDirection='column';
+  if(!state.startTime){state.startTime=Date.now();saveState();}
+  startTimer();initAll();
+}
+
+(function(){
+  if(state.startTime){
+    document.getElementById('intro').style.display='none';
+    const shell=document.getElementById('shell');
+    shell.style.display='flex';shell.style.flexDirection='column';
+    const elapsed=Math.floor((Date.now()-state.startTime)/1000);
+    timeLeft=Math.max(0,45*60-elapsed);
+    startTimer();initAll();
+    return;
+  }
+  const delays=[300,900,1500,2200,2900,3600,4300];
+  delays.forEach((d,i)=>setTimeout(()=>{
+    document.getElementById('il'+i).classList.add('show');
+    if(i===6)setTimeout(()=>{document.getElementById('intro-btn').style.display='block';},500);
+  },d));
+})();
+
+// ── TIMER ────────────────────────────────────────────────
+function startTimer(){
+  updateTimerDisplay();
+  timerInterval=setInterval(()=>{
+    if(timeLeft>0){timeLeft--;updateTimerDisplay();}
+    else{document.getElementById('timer').textContent='00:00';document.getElementById('timer').style.color='var(--red)';}
+  },1000);
+}
+
+function updateTimerDisplay(){
+  const m=Math.floor(timeLeft/60),s=timeLeft%60;
+  document.getElementById('timer').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  if(timeLeft<300)document.getElementById('timer').style.color='var(--red)';
+  else if(timeLeft<600)document.getElementById('timer').style.color='var(--amber)';
+}
+
+// ── ALARM ────────────────────────────────────────────────
+function triggerAlarm(){
+  if(alarmActive)return;alarmActive=true;
+  document.getElementById('alarm-overlay').classList.add('show');
+}
+function closeAlarm(){
+  document.getElementById('alarm-overlay').classList.remove('show');
+  alarmActive=false;wrongStreak=0;
+}
+
+// ── SAVE ─────────────────────────────────────────────────
+function saveState(){
+  try{localStorage.setItem(SAVE_KEY,JSON.stringify(state));}catch(e){}
+}
+
+function saveProgress(){
+  const json=JSON.stringify(state);
+  const cs=fhash(json);
+  const payload=btoa(JSON.stringify({d:json,c:cs}));
+  const blob=new Blob([payload],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='heist-fortschritt.dat';a.click();
+  URL.revokeObjectURL(url);
+}
+
+function fhash(str){let h=0x811c9dc5;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=(h*0x01000193)>>>0;}return h.toString(16);}
+
+function resetAll(){
+  if(!confirm('Wirklich von vorn? Gesamter Fortschritt wird gelöscht.'))return;
+  localStorage.removeItem(SAVE_KEY);location.reload();
+}
+
+// ── HINTS ────────────────────────────────────────────────
+function toggleHint(id){
+  const body=document.getElementById(id);
+  const toggle=body.previousElementSibling;
+  if(!body.classList.contains('open')){
+    body.classList.add('open');
+    toggle.innerHTML='<i class="fa-solid fa-eye-slash"></i> Hinweis verbergen';
+    if(!body.dataset.counted){
+      body.dataset.counted='1';
+      state.hints++;state.hintsLog.push({id,at:Date.now()});
+      document.getElementById('hint-total').textContent=state.hints;
+      saveState();
+    }
+  }else{
+    body.classList.remove('open');
+    toggle.innerHTML='<i class="fa-solid fa-eye"></i> Hinweis';
+  }
+}
+
+// ── ROOMS ────────────────────────────────────────────────
+function showRoom(n){
+  document.querySelectorAll('.room').forEach(r=>r.classList.remove('active'));
+  document.querySelectorAll('.room-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('room-'+n).classList.add('active');
+  document.getElementById('tab-'+n).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function nextRoom(n){
+  if(!state.unlockedRooms.includes(n)){state.unlockedRooms.push(n);saveState();}
+  const tab=document.getElementById('tab-'+n);
+  tab.classList.add('unlocked');
+  tab.onclick=()=>showRoom(n);
+  showRoom(n);
+}
+
+// ── PROGRESS UPDATE ───────────────────────────────────────
+function updateRoomProgress(roomIdx){
+  const keys=Object.keys(state.solved).filter(k=>k.startsWith(roomIdx+'-'));
+  const count=keys.length;
+  const total=5;
+  document.getElementById('pf'+roomIdx).style.width=Math.round(count/total*100)+'%';
+  document.getElementById('rp'+roomIdx).textContent=count+' / '+total;
+  if(count>=total){
+    setTimeout(()=>{
+      document.getElementById('rc-'+roomIdx).style.display='block';
+      document.getElementById('rc-'+roomIdx).scrollIntoView({behavior:'smooth',block:'start'});
+      document.getElementById('tab-'+roomIdx).classList.add('done');
+    },400);
+  }
+}
+
+// ── ANSWER HANDLERS ────────────────────────────────────────
+function handleSingle(key,val,correct,el){
+  if(state.solved[key])return;
+  const c=el.closest('.opts'),fb=document.getElementById('fb'+key.replace('-','-'));
+  const fbId='fb'+key;
+  if(val===correct){
+    wrongStreak=0;
+    c.querySelectorAll('.opt').forEach(o=>o.classList.add('dis'));
+    el.classList.add('ok');
+    document.getElementById(fbId).className='fb show ok';
+    document.getElementById(fbId).innerHTML='<i class="fa-solid fa-circle-check"></i>&nbsp; '+getFB(key,val);
+    state.solved[key]=true;saveState();
+    updateRoomProgress(parseInt(key.split('-')[0]));
+  }else{
+    wrongStreak++;if(wrongStreak>=2){triggerAlarm();wrongStreak=0;}
+    c.querySelectorAll('.opt').forEach(o=>o.classList.add('dis'));
+    el.classList.add('no');
+    document.getElementById(fbId).className='fb show no';
+    document.getElementById(fbId).innerHTML='<i class="fa-solid fa-circle-xmark"></i>&nbsp; '+getFB(key,val);
+    setTimeout(()=>{c.querySelectorAll('.opt').forEach(o=>{if(!o.classList.contains('no'))o.classList.remove('dis');});},1300);
+  }
+}
+
+function checkMulti(key,correctArr){
+  if(state.solved[key])return;
+  const c=document.querySelector('[data-s="'+key+'"]');
+  const fbId='fb'+key;
+  const sel=[...c.querySelectorAll('.opt.sel')].map(o=>o.dataset.v).sort();
+  const ok=JSON.stringify(sel)===JSON.stringify([...correctArr].sort());
+  if(ok){
+    wrongStreak=0;
+    c.querySelectorAll('.opt').forEach(o=>{o.classList.add('dis');if(correctArr.includes(o.dataset.v))o.classList.add('ok');});
+    const sb=document.getElementById('sb'+key);if(sb)sb.disabled=true;
+    document.getElementById(fbId).className='fb show ok';
+    document.getElementById(fbId).innerHTML='<i class="fa-solid fa-circle-check"></i>&nbsp; Richtig! Alle '+correctArr.length+' korrekten Antworten gefunden.';
+    state.solved[key]=true;saveState();
+    updateRoomProgress(parseInt(key.split('-')[0]));
+  }else{
+    wrongStreak++;if(wrongStreak>=2){triggerAlarm();wrongStreak=0;}
+    document.getElementById(fbId).className='fb show no';
+    document.getElementById(fbId).innerHTML='<i class="fa-solid fa-circle-xmark"></i>&nbsp; Nicht ganz — '+sel.length+' Antworten gewählt. Überprüfe nochmal.';
+  }
+}
+
+function checkSort(key,correctOrder){
+  if(state.solved[key])return;
+  const listId='sort'+key.replace('-','-');
+  const list=document.getElementById(listId);
+  const fbId='fb'+key;
+  const items=[...list.querySelectorAll('.sort-item')];
+  items.forEach((item,i)=>item.querySelector('.sort-n').textContent=(i+1)+'.');
+  const curr=items.map(i=>parseInt(i.dataset.order));
+  if(JSON.stringify(curr)===JSON.stringify(correctOrder)){
+    wrongStreak=0;
+    items.forEach(i=>{i.style.borderColor='var(--green)';i.style.background='var(--green-bg)';i.draggable=false;});
+    const sb=document.getElementById('sb'+key);if(sb)sb.disabled=true;
+    document.getElementById(fbId).className='fb show ok';
+    document.getElementById(fbId).innerHTML='<i class="fa-solid fa-circle-check"></i>&nbsp; Perfekt! Die Reihenfolge stimmt.';
+    state.solved[key]=true;saveState();
+    updateRoomProgress(parseInt(key.split('-')[0]));
+  }else{
+    wrongStreak++;if(wrongStreak>=2){triggerAlarm();wrongStreak=0;}
+    document.getElementById(fbId).className='fb show no';
+    document.getElementById(fbId).innerHTML='<i class="fa-solid fa-circle-xmark"></i>&nbsp; Reihenfolge stimmt noch nicht — denk nochmal nach.';
+  }
+}
+
+function showFinal(){
+  state.endTime=Date.now();saveState();
+  clearInterval(timerInterval);
+  document.querySelectorAll('.room').forEach(r=>r.classList.remove('active'));
+  document.getElementById('final-complete').style.display='block';
+  document.getElementById('fc-hints').textContent=state.hints;
+  document.getElementById('fc-time').textContent=
+    String(Math.floor(timeLeft/60)).padStart(2,'0')+':'+String(timeLeft%60).padStart(2,'0');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── FEEDBACK TEXTS ─────────────────────────────────────────
+const FB_DATA={
+  '0-0':{a:'Falsch — das ist eine alltagssprachliche Beschreibung.',b:'Falsch — das beschreibt eher Elektrotechnik.',c:'Richtig! Informatik = INFORmation + autoMATIK. Systematische und automatische Verarbeitung.',d:'Falsch — nur ein Teilbereich.',e:'Falsch — Teilgebiet der theoretischen Informatik.'},
+  '0-1':{a:'Falsch — Verschlüsselung ist kein Authentifizierungsfaktor.',b:'Falsch — Protokolle regeln Kommunikation.',c:'Falsch — Autorisierung ist ein anderer Prozess.',d:'Richtig! Biometrie = etwas das du <strong>bist</strong>. Fingerabdruck, Augenscan, Stimme.',e:'Falsch — Firewall schützt das Netzwerk, ist kein Auth-Faktor.'},
+  '0-2':{a:'Falsch — Phishing würde keine dreifachen Login-Versuche erzeugen.',b:'Richtig! Dreimal falsch, dann richtig — klassischer <strong>Brute-Force-Angriff</strong>.',c:'Falsch — SQL-Injection ist eine andere Angriffsmethode.',d:'Falsch — Man-in-the-Middle fängt Daten ab, probiert keine Passwörter.',e:'Falsch — Social Engineering manipuliert Menschen, nicht Login-Systeme.'},
+  '0-3':{a:'Falsch — er ist bereits eingeloggt. Authentifizierung war erfolgreich.',b:'Falsch — FORBIDDEN bedeutet Zugriff verweigert, nicht Verbindungsfehler.',c:'Richtig! Authentifizierung (Wer?) war erfolgreich. Autorisierung (Was darf ich?) schlägt fehl.',d:'Falsch — Verschlüsselung würde anders aussehen.',e:'Falsch — Kernel-Fehler haben einen anderen Error-Code.'},
+  '0-4':{a:'Falsch — admin123 steht auf jeder Blacklist.',b:'Falsch — Stadtname + Jahreszahl ist ein bekanntes Muster.',c:'Falsch — klassische Ersetzungen kennen alle Tools.',d:'Falsch — persönliche Infos können recherchiert werden.',e:'Richtig! Drei zufällige Wörter + Sonderzeichen + Zahl = lang, unvorhersehbar, schwer zu knacken.'},
+  '1-1':{a:'Falsch — das beschreibt Peer-to-Peer, nicht Client-Server.',b:'Richtig! Server = stellt Dienste bereit, wartet. Client = stellt Anfragen, nutzt Dienste.',c:'Falsch — der Server speichert und verarbeitet, nicht der Client.',d:'Falsch — Server und Client können weltweit verteilt sein.',e:'Falsch — ein Client kann mit vielen Servern kommunizieren (z.B. Browser ruft viele Webserver auf).'},
+  '1-3':{a:'Richtig! Systemsoftware = Vermittler (Betriebssystem, Treiber), automatisch beim Start. Anwendungssoftware = konkrete Nutzeraufgaben, bei Bedarf gestartet.',b:'Falsch — Linux ist kostenlos (Systemsoftware), viele Anwendungen sind auch gratis.',c:'Falsch — Systemsoftware läuft auf allen Systemen.',d:'Falsch — die Unterscheidung hat nichts mit Installation zu tun.',e:'Falsch — der Unterschied ist grundlegend.'},
+  '1-4':{a:'Falsch — DRIVER NOT FOUND ist ein Softwarefehler, kein Hardwaredefekt.',b:'Falsch — RAM hat damit nichts zu tun.',c:'Richtig! Ein Treiber erklärt dem Betriebssystem wie es mit einem Gerät kommunizieren soll. Ohne Treiber — keine Kommunikation.',d:'Falsch — Firewall blockiert Netzwerkzugriffe, keine Hardware.',e:'Falsch — ein Neustart löst das Problem nicht wenn der Treiber fehlt.'},
+  '2-0':{a:'Falsch — GHz beschreibt Arbeitsschritte, nicht Speicher.',b:'Richtig! <strong>Hertz = Arbeitsschritte pro Sekunde.</strong> 3,8 GHz = 3,8 Milliarden Schritte/Sekunde.',c:'Falsch — GHz ist keine Datenmenge.',d:'Falsch — das wäre Gigawatt, nicht Gigahertz.',e:'Falsch — Schreibgeschwindigkeit wird anders gemessen.'},
+  '2-1':{a:'Falsch — der Unterschied geht weit über Geschwindigkeit hinaus.',b:'Falsch — genau umgekehrt.',c:'Falsch — die Unterscheidung hat nichts mit Dateitypen zu tun.',d:'Richtig! RAM = <strong>flüchtig</strong> (beim Ausschalten weg, für aktive Programme). Festplatte = <strong>dauerhaft</strong> (für Dateien und installierte Programme).',e:'Falsch — RAM ist intern verbaut.'},
+  '2-2':{a:'Falsch — SSD hat weniger Kapazität und ist teurer als HDD.',b:'Falsch — SSD hat keine Magnetscheiben, sie besteht aus Flash-Speicher.',c:'Richtig! SSDs sollten das Betriebssystem und wichtige Programme enthalten. Ein Angriff darauf lähmt das gesamte System.',d:'Falsch — SSDs haben keine WLAN-Verbindung.',e:'Falsch — Speicher ist nicht direkt mit dem Internet verbunden.'},
+  '3-0':{a:'Falsch — root ist ein bestehender Superuser-Account auf Linux.',b:'Richtig! <strong>Privilege Escalation</strong> = sich höhere Rechte verschaffen. Root = Superuser ohne Einschränkungen.',c:'Falsch — das System macht das nicht automatisch.',d:'Falsch — hier wurde keine Brute-Force auf root durchgeführt, sondern eine Schwachstelle ausgenutzt.',e:'Falsch — root ist der mächtigste Benutzer überhaupt.'},
+  '3-2':{a:'Falsch — beide Konzepte sind breiter definiert.',b:'Falsch — genau umgekehrt.',c:'Richtig! Datensicherheit = <strong>technisch</strong> (Vertraulichkeit, Integrität, Verfügbarkeit). Datenschutz = <strong>rechtlich</strong> (DSGVO, Privatheit von Personen).',d:'Falsch — der Unterschied ist fundamental.',e:'Falsch — Datenschutz gilt für alle natürlichen Personen.'},
+  '3-4':{a:'Falsch — zwei Passwörter sind immer noch nur ein Faktor.',b:'Falsch — doppelte Verschlüsselung ist kein Authentifizierungsfaktor.',c:'Richtig! 2FA = zwei unabhängige Faktoren. Passwort gestohlen? Ohne Handy geht trotzdem nichts.',d:'Falsch — zwei Geräte gleichzeitig ist kein Sicherheitskonzept.',e:'Falsch — E-Mail-Bestätigung ist leicht zu kompromittieren.'},
+  '4-2':{a:'Falsch — genau das Gegenteil war die alte Situation vor Von Neumann.',b:'Richtig! <strong>Universell programmierbar</strong> — durch Software ändern, ohne Hardware umzubauen. Programm und Daten im selben Speicher.',c:'Falsch — das Internet wurde Jahrzehnte später entwickelt.',d:'Falsch — Lochkarten waren die alte Methode, Von Neumann hat das verbessert.',e:'Falsch — Von Neumanns Ziel war genau das Gegenteil.'},
+  '4-4':{a:'Falsch — Hardware allein schützt nicht.',b:'Falsch — das Betriebssystem ist nicht das entscheidende Element.',c:'Falsch — RAM und SSD sind keine Sicherheitsmaßnahmen.',d:'Richtig! IT-Sicherheit = <strong>mehrere Schutzebenen gleichzeitig</strong>. Defense in Depth: kein einzelnes Tool ist genug.',e:'Falsch — Isolation ist keine praktische Lösung für ein Bankensystem.'}
+};
+
+function getFB(key,val){return FB_DATA[key]&&FB_DATA[key][val]?FB_DATA[key][val]:'Überprüfe deine Antwort.';}
+
+// ── INIT ───────────────────────────────────────────────────
+function initAll(){
+  // Restore unlocked rooms
+  state.unlockedRooms.forEach(n=>{
+    const tab=document.getElementById('tab-'+n);
+    if(tab){tab.classList.add('unlocked');tab.onclick=()=>showRoom(n);}
+  });
+
+  // Init single choice
+  document.querySelectorAll('.opts[data-type="single"]').forEach(c=>{
+    const key=c.dataset.s,correct=c.dataset.ok;
+    if(state.solved[key]){
+      c.querySelectorAll('.opt').forEach(o=>{o.classList.add('dis');if(o.dataset.v===correct)o.classList.add('ok');});
+      const fb=document.getElementById('fb'+key);
+      if(fb){fb.className='fb show ok';fb.innerHTML='<i class="fa-solid fa-circle-check"></i>&nbsp; '+getFB(key,correct);}
+    }
+    c.querySelectorAll('.opt').forEach(o=>o.addEventListener('click',()=>handleSingle(key,o.dataset.v,correct,o)));
+  });
+
+  // Init multi
+  document.querySelectorAll('.opts[data-type="multi"]').forEach(c=>{
+    const key=c.dataset.s,correctArr=c.dataset.ok.split(',');
+    if(state.solved[key]){
+      c.querySelectorAll('.opt').forEach(o=>{o.classList.add('dis');if(correctArr.includes(o.dataset.v))o.classList.add('ok');});
+      const sb=document.getElementById('sb'+key);if(sb)sb.disabled=true;
+      const fb=document.getElementById('fb'+key);
+      if(fb){fb.className='fb show ok';fb.innerHTML='<i class="fa-solid fa-circle-check"></i>&nbsp; Richtig gelöst!';}
+    }
+    c.querySelectorAll('.opt').forEach(o=>o.addEventListener('click',()=>{if(!o.classList.contains('dis'))o.classList.toggle('sel');}));
+  });
+
+  // Init sort drag
+  ['sort1-0','sort3-3','sort4-1'].forEach(id=>{
+    const list=document.getElementById(id);if(!list)return;
+    let dragged=null;
+    list.querySelectorAll('.sort-item').forEach(item=>{
+      item.draggable=true;
+      item.addEventListener('dragstart',()=>{dragged=item;item.classList.add('drag');});
+      item.addEventListener('dragend',()=>item.classList.remove('drag'));
+      item.addEventListener('dragover',e=>{e.preventDefault();item.classList.add('over');});
+      item.addEventListener('dragleave',()=>item.classList.remove('over'));
+      item.addEventListener('drop',e=>{e.preventDefault();item.classList.remove('over');if(dragged&&dragged!==item)list.insertBefore(dragged,item);});
+    });
+  });
+
+  // Update all progress bars
+  [0,1,2,3,4].forEach(n=>{
+    const keys=Object.keys(state.solved).filter(k=>k.startsWith(n+'-'));
+    if(keys.length>0){
+      document.getElementById('pf'+n).style.width=Math.round(keys.length/5*100)+'%';
+      document.getElementById('rp'+n).textContent=keys.length+' / 5';
+      if(keys.length>=5){
+        document.getElementById('rc-'+n).style.display='block';
+        document.getElementById('tab-'+n).classList.add('done');
+      }
+    }
+  });
+
+  // Show active room
+  const lastRoom=Math.max(...state.unlockedRooms);
+  showRoom(lastRoom);
+
+  // Check if all done
+  if(Object.keys(state.solved).length>=25&&!document.getElementById('final-complete').style.display!=='none'){
+    // already done
+  }
+}
+</script>

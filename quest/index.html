@@ -1,0 +1,102 @@
+---
+layout: quest
+title: Dashboard · CyberCore
+---
+
+<div class="cc-section-title">// MISSION OVERVIEW</div>
+<div class="cc-section-sub">Auftrag: Analyse des Sicherheitsvorfalls · HLS Berlin · Analyst: Junior-Analyst</div>
+
+<div class="cc-metrics">
+  <div class="cc-metric">
+    <div class="cc-metric-label">AUFGABEN</div>
+    <div class="cc-metric-val" id="tasks-completed">0/12</div>
+    <div class="cc-metric-sub">abgeschlossen</div>
+    <div class="cc-progress-bar"><div class="cc-progress-fill" style="width:0%"></div></div>
+  </div>
+  <div class="cc-metric">
+    <div class="cc-metric-label">HINWEISE</div>
+    <div class="cc-metric-val amber" id="hint-count">0</div>
+    <div class="cc-metric-sub">verwendet</div>
+  </div>
+  <div class="cc-metric">
+    <div class="cc-metric-label">BEWEISE</div>
+    <div class="cc-metric-val red">0</div>
+    <div class="cc-metric-sub">gesichert</div>
+  </div>
+  <div class="cc-metric">
+    <div class="cc-metric-label">STATUS</div>
+    <div class="cc-metric-val green">AKTIV</div>
+    <div class="cc-metric-sub">Block 1 läuft</div>
+  </div>
+</div>
+
+<div class="cc-cards">
+  <div class="cc-card">
+    <div class="cc-card-title">
+      <i class="fa-solid fa-terminal" aria-hidden="true"></i>
+      LETZTE LOG-EINTRÄGE
+    </div>
+    <div class="cc-log">
+      <div class="cc-log-entry">
+        <span class="cc-log-time">03:47:22</span>
+        <span class="cc-log-msg err">LOGIN FAILED — user: admin</span>
+      </div>
+      <div class="cc-log-entry">
+        <span class="cc-log-time">03:47:31</span>
+        <span class="cc-log-msg err">LOGIN FAILED — user: admin</span>
+      </div>
+      <div class="cc-log-entry">
+        <span class="cc-log-time">03:47:44</span>
+        <span class="cc-log-msg warn">LOGIN SUCCESS — user: admin</span>
+      </div>
+      <div class="cc-log-entry">
+        <span class="cc-log-time">03:48:01</span>
+        <span class="cc-log-msg err">ACCESS /noten — UNAUTHORIZED</span>
+      </div>
+      <div class="cc-log-entry">
+        <span class="cc-log-time">03:48:12</span>
+        <span class="cc-log-msg ok">→ Vollzugriff gewährt</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cc-card">
+    <div class="cc-card-title">
+      <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+      MISSION BLÖCKE
+    </div>
+    <div class="cc-block-list">
+      <a href="/quest/block1/" class="cc-block-item">
+        <span class="cc-block-num">BLOCK 01</span>
+        <div class="cc-block-info">
+          <div class="cc-block-name">Erstzugang & Authentifizierung</div>
+          <div class="cc-block-desc">Passwörter · Auth · Autorisierung</div>
+        </div>
+        <span class="cc-block-status active">● AKTIV</span>
+      </a>
+      <div class="cc-block-item locked">
+        <span class="cc-block-num">BLOCK 02</span>
+        <div class="cc-block-info">
+          <div class="cc-block-name">Tatortanalyse</div>
+          <div class="cc-block-desc">Hardware · Software · EVA</div>
+        </div>
+        <span class="cc-block-status locked"><i class="fa-solid fa-lock" style="font-size:11px"></i> GESPERRT</span>
+      </div>
+      <div class="cc-block-item locked">
+        <span class="cc-block-num">BLOCK 03</span>
+        <div class="cc-block-info">
+          <div class="cc-block-name">Abschlussbericht</div>
+          <div class="cc-block-desc">Kodierung · Dokumentation</div>
+        </div>
+        <span class="cc-block-status locked"><i class="fa-solid fa-lock" style="font-size:11px"></i> GESPERRT</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cc-hint-bar">
+  <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
+  <span>Hinweise verwendet in dieser Session:</span>
+  <span class="cc-hint-count" id="hint-count-bar">0 Hinweise</span>
+  <span style="margin-left:auto; color: var(--text-dim);">Jeder Hinweis wird gezählt · Stark sein lohnt sich</span>
+</div>

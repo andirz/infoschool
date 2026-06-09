@@ -1,0 +1,151 @@
+---
+layout: quest
+title: Block 01 · Erstzugang
+script: block1.js
+---
+
+<div class="cc-section-title">// BLOCK 01 — ERSTZUGANG</div>
+<div class="cc-section-sub">Tatzeit: 08.09.2025 · 03:47 UTC · Betroffenes System: HLS Berlin Schulnetzwerk</div>
+
+<div class="cc-info">
+  <strong>Einweisung:</strong> Heute früh um 03:47 Uhr wurde ein unbefugter Zugriff auf das Schulnetzwerk der HLS Berlin registriert.
+  Jemand hat sich Zugang zum Administratorkonto verschafft und Schülerdaten eingesehen.
+  Deine Aufgabe: Analysiere die Logs, identifiziere die Schwachstellen und dokumentiere deine Erkenntnisse.
+</div>
+
+<!-- AUFGABE 1 -->
+<div class="cc-task" data-task-id="b1_t1">
+  <div class="cc-task-header">
+    <span class="cc-task-num">01</span>
+    <div class="cc-task-title">Systemzugang einrichten</div>
+  </div>
+  <div class="cc-task-body">
+    Bevor du die Fallakte öffnen kannst, musst du dich im CyberCore-System registrieren.
+    Wähle ein sicheres Passwort für deinen Analysten-Account. Das System bewertet es live.
+  </div>
+
+  <input type="password" class="cc-pw-input" id="pw-input" placeholder="Passwort eingeben…" autocomplete="off">
+  <div class="cc-pw-meter">
+    <div class="cc-pw-bar" id="bar1"></div>
+    <div class="cc-pw-bar" id="bar2"></div>
+    <div class="cc-pw-bar" id="bar3"></div>
+    <div class="cc-pw-bar" id="bar4"></div>
+  </div>
+  <div class="cc-pw-feedback" id="pw-feedback" style="color: var(--text-dim);">—</div>
+
+  <div class="cc-spoiler" data-hint-id="b1_h1" style="margin-top:12px">
+    <div class="cc-spoiler-toggle">
+      <i class="fa-solid fa-eye"></i>
+      <span class="cc-hint-label">Hinweis anzeigen</span>
+    </div>
+    <div class="cc-spoiler-content">
+      Ein sicheres Passwort hat mindestens 8 Zeichen und enthält Großbuchstaben, Kleinbuchstaben,
+      Ziffern und Sonderzeichen. Alternativ: mindestens 25 Zeichen mit zwei Zeichenarten.
+      Beispiel eines schlechten Passworts: <code>Hunde2024!</code> — warum? Es enthält ein Wörterbuch-Wort und ein vorhersehbares Muster.
+    </div>
+  </div>
+</div>
+
+<!-- AUFGABE 2 -->
+<div class="cc-task" data-task-id="b1_t2">
+  <div class="cc-task-header">
+    <span class="cc-task-num">02</span>
+    <div class="cc-task-title">Log-Analyse: Was ist passiert?</div>
+  </div>
+  <div class="cc-task-body">
+    Das System hat folgende Einträge in der Nacht aufgezeichnet. Lies sie sorgfältig.
+  </div>
+
+  <div class="cc-log" style="margin: 12px 0; background: var(--bg-base); border-radius: var(--radius); padding: 12px 16px;">
+    <div class="cc-log-entry"><span class="cc-log-time">03:47:22</span><span class="cc-log-msg err">LOGIN FAILED — user: admin — reason: wrong_password</span></div>
+    <div class="cc-log-entry"><span class="cc-log-time">03:47:31</span><span class="cc-log-msg err">LOGIN FAILED — user: admin — reason: wrong_password</span></div>
+    <div class="cc-log-entry"><span class="cc-log-time">03:47:44</span><span class="cc-log-msg warn">LOGIN SUCCESS — user: admin</span></div>
+    <div class="cc-log-entry"><span class="cc-log-time">03:48:01</span><span class="cc-log-msg err">ACCESS /schueler/noten — user: admin — FORBIDDEN</span></div>
+    <div class="cc-log-entry"><span class="cc-log-time">03:48:12</span><span class="cc-log-msg ok">PRIVILEGE ESCALATION — admin → root</span></div>
+    <div class="cc-log-entry"><span class="cc-log-time">03:48:15</span><span class="cc-log-msg ok">ACCESS /schueler/noten — user: root — OK</span></div>
+  </div>
+
+  <div class="cc-task-body">
+    Beschreibe in eigenen Worten: Was ist in dieser Nacht passiert? Welche zwei Schritte hat der Angreifer unternommen?
+  </div>
+
+  <textarea class="cc-input-area" data-task-id="b1_t2" placeholder="Deine Analyse hier…"></textarea>
+
+  <div class="cc-spoiler" data-hint-id="b1_h2" style="margin-top:10px">
+    <div class="cc-spoiler-toggle">
+      <i class="fa-solid fa-eye"></i>
+      <span class="cc-hint-label">Hinweis anzeigen</span>
+    </div>
+    <div class="cc-spoiler-content">
+      Schritt 1: Der Angreifer hat mehrmals versucht, sich einzuloggen — das nennt man einen
+      <strong>Brute-Force-Angriff</strong> auf die <strong>Authentifizierung</strong>.<br><br>
+      Schritt 2: Nachdem er Zugang hatte, hat er seine Rechte erweitert (root), um auf gesperrte Bereiche zuzugreifen —
+      das ist ein Problem der <strong>Autorisierung</strong>.
+    </div>
+  </div>
+
+  <div style="margin-top: 12px;">
+    <button class="cc-btn primary cc-task-done" data-task-id="b1_t2">
+      <i class="fa-solid fa-check"></i> Aufgabe abschließen
+    </button>
+  </div>
+</div>
+
+<!-- AUFGABE 3 -->
+<div class="cc-task" data-task-id="b1_t3">
+  <div class="cc-task-header">
+    <span class="cc-task-num">03</span>
+    <div class="cc-task-title">Authentifizierung vs. Autorisierung</div>
+  </div>
+  <div class="cc-task-body">
+    Im Log tauchen zwei verschiedene Sicherheitsprobleme auf. Erkläre den Unterschied zwischen
+    <strong style="color: var(--accent)">Authentifizierung</strong> und
+    <strong style="color: var(--accent)">Autorisierung</strong> — und nenne jeweils ein Beispiel aus deinem Alltag.
+  </div>
+
+  <textarea class="cc-input-area" data-task-id="b1_t3" placeholder="Authentifizierung ist… / Autorisierung ist…"></textarea>
+
+  <div class="cc-spoiler" data-hint-id="b1_h3" style="margin-top:10px">
+    <div class="cc-spoiler-toggle">
+      <i class="fa-solid fa-eye"></i>
+      <span class="cc-hint-label">Hinweis anzeigen</span>
+    </div>
+    <div class="cc-spoiler-content">
+      <strong>Authentifizierung</strong> = Wer bist du? Das System prüft deine Identität. Beispiel: Login mit Benutzername + Passwort.<br><br>
+      <strong>Autorisierung</strong> = Was darfst du? Das System prüft deine Rechte. Beispiel: Ein Schüler kann seine eigenen Noten sehen, aber nicht die aller anderen.
+    </div>
+  </div>
+
+  <div style="margin-top: 12px;">
+    <button class="cc-btn primary cc-task-done" data-task-id="b1_t3">
+      <i class="fa-solid fa-check"></i> Aufgabe abschließen
+    </button>
+  </div>
+</div>
+
+<!-- EXPERTENAUFGABE -->
+<div class="cc-task" data-task-id="b1_expert" style="border-color: #3a1a5a;">
+  <div class="cc-task-header">
+    <span class="cc-task-num" style="color: #aa88ee;">EXPERT</span>
+    <div class="cc-task-title">Zwei-Faktor-Authentifizierung</div>
+    <span class="cc-tag expert" style="margin-left:auto">BONUS</span>
+  </div>
+  <div class="cc-task-body">
+    Der Angreifer hat das Passwort geknackt. Hätte eine Zwei-Faktor-Authentifizierung (2FA) den Angriff verhindert?
+    Erkläre wie 2FA funktioniert und warum es sicherer ist als ein einzelnes Passwort.
+  </div>
+
+  <textarea class="cc-input-area" data-task-id="b1_expert" placeholder="2FA funktioniert, indem…"></textarea>
+
+  <div style="margin-top: 12px;">
+    <button class="cc-btn cc-task-done" data-task-id="b1_expert" style="border-color: #3a1a5a; color: #aa88ee;">
+      <i class="fa-solid fa-check"></i> Bonusaufgabe abschließen
+    </button>
+  </div>
+</div>
+
+<div style="display: flex; justify-content: flex-end; margin-top: 8px;">
+  <button class="cc-btn primary" onclick="Storage.exportData()">
+    <i class="fa-solid fa-floppy-disk"></i> Fortschritt speichern
+  </button>
+</div>

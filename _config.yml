@@ -1,0 +1,12 @@
+title: "CyberCore – HLS Berlin"
+description: "Informatik Lernplattform · E-Phase · Informatiksysteme"
+baseurl: ""
+url: ""
+
+markdown: kramdown
+highlighter: rouge
+
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock

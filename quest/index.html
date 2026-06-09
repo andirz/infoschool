@@ -1,96 +1,1425 @@
 ---
-layout: quest
-title: Dashboard · CyberCore
+layout: default
+title: PHANTOM // Terminal
 ---
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#000;--term:#0a0f0a;--text:#00ff41;--dim:#004d14;
+  --bright:#7fff7f;--red:#ff4444;--amber:#ffaa00;--blue:#4488ff;
+  --white:#e0e0e0;--muted:#336633;
+  --mono:'Courier New',monospace;
+}
+html,body{height:100%;background:var(--bg);overflow:hidden}
+body{font-family:var(--mono);color:var(--text);font-size:15px}
 
-<div class="cc-section-title">// MISSION CONTROL</div>
-<div class="cc-section-sub">Aktiver Vorfall: HLS Berlin · 08.09.2025 · 03:47 UTC</div>
+/* ══ INTRO / ARMAGEDDON ══════════════════════════════════ */
+#intro{
+  position:fixed;inset:0;background:#000;z-index:9999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.glitch-bg{
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg,rgba(0,255,65,.03) 0px,rgba(0,255,65,.03) 1px,transparent 1px,transparent 4px);
+  animation:scan 8s linear infinite;
+}
+@keyframes scan{from{background-position:0 0}to{background-position:0 100%}}
 
-<div class="cc-briefing">
-  <div class="cc-briefing-title">// LAGEBERICHT</div>
-  <p>
-    In der Nacht zum 8. September wurde das Schulnetzwerk der <strong>Hans-Litten-Schule Berlin</strong>
-    kompromittiert. Ein Administratorkonto wurde übernommen, vertrauliche Schülerdaten eingesehen.
-    <strong>Deine Aufgabe:</strong> Analysiere den Vorfall, identifiziere die Schwachstellen,
-    erstelle einen Abschlussbericht. Drei Blöcke. Ein Ziel.
-  </p>
-</div>
+.alarm-flash{
+  position:absolute;inset:0;
+  background:var(--red);opacity:0;
+  animation:flash 0.5s ease 0.2s 6;
+}
+@keyframes flash{0%,100%{opacity:0}50%{opacity:.15}}
 
-<div class="cc-metrics">
-  <div class="cc-metric">
-    <div class="cc-metric-label">AUFGABEN</div>
-    <div class="cc-metric-val" id="tasks-completed">0/12</div>
-    <div class="cc-metric-sub">abgeschlossen</div>
-    <div class="cc-progress-bar"><div class="cc-progress-fill" style="width:0%"></div></div>
-  </div>
-  <div class="cc-metric">
-    <div class="cc-metric-label">HINWEISE</div>
-    <div class="cc-metric-val amber" id="hint-count">0</div>
-    <div class="cc-metric-sub">verwendet</div>
-  </div>
-  <div class="cc-metric">
-    <div class="cc-metric-label">BEWEISE</div>
-    <div class="cc-metric-val red">0</div>
-    <div class="cc-metric-sub">gesichert</div>
-  </div>
-  <div class="cc-metric">
-    <div class="cc-metric-label">STATUS</div>
-    <div class="cc-metric-val green">AKTIV</div>
-    <div class="cc-metric-sub">Block 1 läuft</div>
-  </div>
-</div>
+.intro-content{position:relative;z-index:1;text-align:center;padding:2rem}
 
-<div class="cc-cards">
-  <div class="cc-card">
-    <div class="cc-card-title">
-      <i class="fa-solid fa-terminal" aria-hidden="true"></i>
-      LETZTE LOG-EINTRÄGE
-    </div>
-    <div class="cc-log">
-      <div class="cc-log-entry"><span class="cc-log-time">03:47:22</span><span class="cc-log-msg err">LOGIN FAILED — user: admin</span></div>
-      <div class="cc-log-entry"><span class="cc-log-time">03:47:31</span><span class="cc-log-msg err">LOGIN FAILED — user: admin</span></div>
-      <div class="cc-log-entry"><span class="cc-log-time">03:47:44</span><span class="cc-log-msg warn">LOGIN SUCCESS — user: admin</span></div>
-      <div class="cc-log-entry"><span class="cc-log-time">03:48:01</span><span class="cc-log-msg err">ACCESS /noten — FORBIDDEN</span></div>
-      <div class="cc-log-entry"><span class="cc-log-time">03:48:12</span><span class="cc-log-msg ok">PRIVILEGE ESCALATION → root</span></div>
-    </div>
-  </div>
-  <div class="cc-card">
-    <div class="cc-card-title">
-      <i class="fa-solid fa-list-check" aria-hidden="true"></i>
-      MISSION BLÖCKE
-    </div>
-    <div class="cc-block-list">
-      <a href="/quest/block1/" class="cc-block-item">
-        <span class="cc-block-num">BLOCK 01</span>
-        <div class="cc-block-info">
-          <div class="cc-block-name">Erstzugang & Authentifizierung</div>
-          <div class="cc-block-desc">Passwörter · Auth · Autorisierung</div>
-        </div>
-        <span class="cc-block-status active">● AKTIV</span>
-      </a>
-      <div class="cc-block-item locked">
-        <span class="cc-block-num">BLOCK 02</span>
-        <div class="cc-block-info">
-          <div class="cc-block-name">Tatortanalyse</div>
-          <div class="cc-block-desc">Hardware · Software · EVA</div>
-        </div>
-        <span class="cc-block-status locked"><i class="fa-solid fa-lock"></i> GESPERRT</span>
+.phantom-logo{
+  font-size:clamp(40px,8vw,80px);font-weight:900;letter-spacing:8px;
+  color:var(--red);text-shadow:0 0 40px rgba(255,68,68,.8),0 0 80px rgba(255,68,68,.4);
+  animation:glitch-text 3s ease infinite;margin-bottom:8px;
+}
+@keyframes glitch-text{
+  0%,90%,100%{transform:none;text-shadow:0 0 40px rgba(255,68,68,.8)}
+  91%{transform:translateX(-3px);text-shadow:-3px 0 #00ff41,3px 0 #4488ff}
+  93%{transform:translateX(3px);text-shadow:3px 0 #00ff41,-3px 0 #4488ff}
+  95%{transform:none}
+}
+
+.phantom-sub{font-size:13px;color:var(--muted);letter-spacing:4px;margin-bottom:3rem}
+
+.alert-box{
+  background:rgba(255,68,68,.08);border:1px solid rgba(255,68,68,.4);
+  border-radius:4px;padding:20px 32px;margin-bottom:2rem;max-width:600px;
+  animation:border-pulse 1.5s ease infinite;
+}
+@keyframes border-pulse{0%,100%{border-color:rgba(255,68,68,.4)}50%{border-color:rgba(255,68,68,.9)}}
+
+.alert-title{color:var(--red);font-size:14px;letter-spacing:3px;margin-bottom:12px}
+.alert-text{color:var(--white);font-size:14px;line-height:1.8}
+.alert-text span.hl{color:var(--amber);font-weight:bold}
+.alert-text span.gr{color:var(--text)}
+
+.countdown-wrap{margin-bottom:2rem}
+.countdown-label{font-size:11px;color:var(--muted);letter-spacing:3px;margin-bottom:8px}
+.countdown{font-size:48px;font-weight:900;color:var(--red);letter-spacing:6px;
+  text-shadow:0 0 20px rgba(255,68,68,.6);font-family:var(--mono)}
+
+.intro-stats{display:flex;gap:40px;margin-bottom:2.5rem;justify-content:center}
+.istat{text-align:center}
+.istat-val{font-size:22px;font-weight:700;color:var(--red)}
+.istat-label{font-size:10px;color:var(--muted);letter-spacing:2px;margin-top:4px}
+
+#start-btn{
+  background:transparent;border:2px solid var(--text);border-radius:3px;
+  color:var(--text);font-family:var(--mono);font-size:16px;letter-spacing:3px;
+  padding:16px 48px;cursor:pointer;transition:all .2s;
+  text-shadow:0 0 10px rgba(0,255,65,.5);
+  animation:btn-pulse 2s ease infinite;
+}
+@keyframes btn-pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,255,65,.3)}50%{box-shadow:0 0 20px 4px rgba(0,255,65,.15)}}
+#start-btn:hover{background:rgba(0,255,65,.1);color:var(--bright);border-color:var(--bright)}
+
+/* ══ TERMINAL ════════════════════════════════════════════ */
+#game{display:none;height:100vh;flex-direction:column}
+
+.game-topbar{
+  background:#000;border-bottom:1px solid #1a2a1a;
+  padding:8px 20px;display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.gtb-left{display:flex;align-items:center;gap:16px}
+.gtb-logo{font-size:12px;color:var(--red);letter-spacing:3px;font-weight:700}
+.gtb-path{font-size:12px;color:var(--muted)}
+.gtb-right{display:flex;align-items:center;gap:20px}
+.gtb-timer{font-size:13px;color:var(--red);letter-spacing:2px}
+.gtb-hints{font-size:12px;color:var(--amber)}
+.gtb-progress{font-size:12px;color:var(--muted)}
+
+.game-body{display:flex;flex:1;overflow:hidden}
+
+/* ══ SIDEBAR ═════════════════════════════════════════════ */
+.sidebar{
+  width:220px;flex-shrink:0;background:#050905;
+  border-right:1px solid #1a2a1a;display:flex;flex-direction:column;
+  overflow-y:auto;
+}
+.sb-section{padding:14px 16px;border-bottom:1px solid #0d1a0d}
+.sb-label{font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:10px}
+.sb-node{
+  display:flex;align-items:center;gap:8px;padding:7px 10px;
+  font-size:12px;color:#336633;border-radius:3px;cursor:default;
+  transition:all .2s;margin-bottom:2px;
+}
+.sb-node.unlocked{color:var(--muted);cursor:pointer}
+.sb-node.unlocked:hover{background:rgba(0,255,65,.06);color:var(--text)}
+.sb-node.active{color:var(--text);background:rgba(0,255,65,.08)}
+.sb-node.done{color:#2a6a2a}
+.sb-node i{font-size:12px;width:14px;text-align:center}
+.sb-node .sb-check{margin-left:auto;color:var(--text);font-size:10px}
+
+.sb-objective{padding:14px 16px}
+.sb-obj-label{font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:8px}
+.sb-obj-text{font-size:12px;color:var(--amber);line-height:1.7}
+
+/* ══ TERMINAL AREA ═══════════════════════════════════════ */
+.term-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+.term-output{
+  flex:1;overflow-y:auto;padding:20px 24px;
+  background:var(--term);
+  scroll-behavior:smooth;
+}
+.term-output::-webkit-scrollbar{width:4px}
+.term-output::-webkit-scrollbar-track{background:transparent}
+.term-output::-webkit-scrollbar-thumb{background:#1a2a1a}
+
+.term-line{
+  font-size:14px;line-height:1.9;white-space:pre-wrap;word-break:break-word;
+  animation:fadeIn .2s ease;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.term-line.cmd{color:var(--bright)}
+.term-line.out{color:var(--text)}
+.term-line.err{color:var(--red)}
+.term-line.info{color:var(--blue)}
+.term-line.warn{color:var(--amber)}
+.term-line.dim{color:var(--muted)}
+.term-line.white{color:var(--white)}
+.term-line.blank{height:8px}
+.term-line.big{font-size:18px;font-weight:700;color:var(--bright)}
+.term-line.success{color:var(--text);text-shadow:0 0 8px rgba(0,255,65,.5)}
+
+/* ══ COMMAND BUTTONS ══════════════════════════════════════ */
+.cmd-area{
+  background:#000;border-top:1px solid #1a2a1a;
+  padding:14px 24px;flex-shrink:0;
+}
+.cmd-label{font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:10px}
+.cmd-buttons{display:flex;flex-wrap:wrap;gap:8px}
+.cmd-btn{
+  background:transparent;border:1px solid #1a3a1a;border-radius:3px;
+  color:var(--muted);font-family:var(--mono);font-size:13px;
+  padding:7px 14px;cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;gap:6px;
+}
+.cmd-btn:hover:not(:disabled){
+  border-color:var(--text);color:var(--text);
+  background:rgba(0,255,65,.06);
+  text-shadow:0 0 8px rgba(0,255,65,.4);
+}
+.cmd-btn:disabled{opacity:.25;cursor:not-allowed}
+.cmd-btn.primary{border-color:rgba(0,255,65,.4);color:var(--text)}
+.cmd-btn.danger{border-color:rgba(255,68,68,.4);color:var(--red)}
+.cmd-prompt{color:var(--bright);margin-right:2px;font-size:12px}
+
+/* ══ MODAL ALARM ══════════════════════════════════════════ */
+#alarm{
+  position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:8888;
+  display:none;align-items:center;justify-content:center;
+}
+#alarm.show{display:flex}
+.alarm-box{
+  background:#0a0005;border:2px solid var(--red);border-radius:4px;
+  padding:40px;max-width:480px;width:100%;text-align:center;
+  animation:modalIn .3s ease;
+  box-shadow:0 0 60px rgba(255,68,68,.25),inset 0 0 40px rgba(255,68,68,.05);
+}
+@keyframes modalIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+.alarm-icon{font-size:52px;color:var(--red);margin-bottom:16px;animation:shake .35s ease infinite alternate}
+@keyframes shake{from{transform:rotate(-12deg)scale(1.1)}to{transform:rotate(12deg)scale(1.1)}}
+.alarm-title{font-size:20px;color:var(--red);letter-spacing:3px;margin-bottom:10px;font-weight:700}
+.alarm-msg{font-size:14px;color:#cc8888;line-height:1.8;margin-bottom:24px}
+.alarm-close{
+  background:transparent;border:1px solid var(--red);border-radius:3px;
+  color:var(--red);font-family:var(--mono);font-size:13px;letter-spacing:2px;
+  padding:10px 28px;cursor:pointer;transition:all .2s;
+}
+.alarm-close:hover{background:rgba(255,68,68,.15)}
+
+/* ══ HINT PANEL ═══════════════════════════════════════════ */
+.hint-panel{
+  background:#000;border-top:1px solid #1a2a1a;
+  padding:0;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease;
+}
+.hint-panel.open{max-height:200px;padding:14px 24px}
+.hint-steps{display:flex;gap:10px;margin-bottom:10px}
+.hint-step-btn{
+  background:transparent;border:1px solid #2a3a2a;border-radius:3px;
+  color:var(--muted);font-family:var(--mono);font-size:11px;
+  padding:5px 12px;cursor:pointer;transition:all .2s;letter-spacing:1px;
+}
+.hint-step-btn:hover{border-color:var(--amber);color:var(--amber)}
+.hint-step-btn.active{border-color:var(--amber);color:var(--amber);background:rgba(255,170,0,.08)}
+.hint-step-btn.used{border-color:#2a2a1a;color:#554400}
+.hint-content{font-size:13px;color:var(--amber);line-height:1.7;min-height:40px}
+
+/* ══ FILE VIEWER ══════════════════════════════════════════ */
+.file-view{
+  position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:500;
+  display:none;flex-direction:column;
+}
+.file-view.show{display:flex}
+.fv-bar{
+  background:#050905;border-bottom:1px solid #1a2a1a;
+  padding:10px 20px;display:flex;align-items:center;justify-content:space-between;
+}
+.fv-name{font-size:13px;color:var(--text);letter-spacing:1px}
+.fv-close{background:transparent;border:1px solid #2a2a2a;border-radius:3px;color:var(--muted);font-family:var(--mono);font-size:12px;padding:5px 14px;cursor:pointer;transition:all .2s;letter-spacing:1px}
+.fv-close:hover{border-color:var(--red);color:var(--red)}
+.fv-content{flex:1;overflow-y:auto;padding:28px 40px;font-size:14px;line-height:2;color:var(--white);max-width:800px;margin:0 auto;width:100%}
+.fv-content .fv-meta{font-size:11px;color:var(--muted);letter-spacing:2px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid #1a2a1a}
+.fv-content h2{color:var(--text);font-size:16px;margin:20px 0 10px;letter-spacing:2px}
+.fv-content p{color:var(--white);margin-bottom:12px}
+.fv-content .highlight{color:var(--amber);font-weight:700}
+.fv-content .code{color:var(--text);background:rgba(0,255,65,.05);padding:2px 8px;border-radius:2px;font-family:var(--mono)}
+.fv-content .redacted{background:var(--red);color:var(--red);border-radius:2px;user-select:none}
+
+/* ══ QUESTION OVERLAY ═════════════════════════════════════ */
+.q-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:600;
+  display:none;align-items:center;justify-content:center;padding:2rem;
+}
+.q-overlay.show{display:flex}
+.q-box{
+  background:#050f05;border:1px solid #1a3a1a;border-radius:4px;
+  padding:32px;max-width:640px;width:100%;
+  animation:modalIn .3s ease;
+  box-shadow:0 0 40px rgba(0,255,65,.08);
+}
+.q-label{font-size:10px;color:var(--muted);letter-spacing:3px;margin-bottom:12px}
+.q-title{font-size:18px;color:var(--bright);margin-bottom:8px;font-weight:600}
+.q-context{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.7;border-left:2px solid #1a3a1a;padding-left:14px}
+.q-options{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.q-opt{
+  background:transparent;border:1px solid #1a3a1a;border-radius:3px;
+  color:#669966;font-family:var(--mono);font-size:14px;
+  padding:12px 16px;cursor:pointer;transition:all .2s;text-align:left;line-height:1.5;
+  display:flex;align-items:flex-start;gap:10px;
+}
+.q-opt::before{content:'>';color:var(--muted);flex-shrink:0;margin-top:1px}
+.q-opt:hover:not(:disabled){border-color:var(--text);color:var(--text);background:rgba(0,255,65,.05)}
+.q-opt.ok{border-color:var(--text);color:var(--text);background:rgba(0,255,65,.08)}
+.q-opt.ok::before{content:'✓';color:var(--text)}
+.q-opt.no{border-color:#3a1a1a;color:#663333;text-decoration:line-through;opacity:.5}
+.q-opt.no::before{content:'✗';color:var(--red)}
+.q-opt:disabled{cursor:not-allowed}
+.q-feedback{
+  display:none;font-size:13px;line-height:1.7;padding:12px 14px;
+  border-radius:3px;margin-bottom:12px;
+}
+.q-feedback.show{display:block}
+.q-feedback.ok{color:var(--text);background:rgba(0,255,65,.06);border:1px solid rgba(0,255,65,.15)}
+.q-feedback.no{color:#ff8888;background:rgba(255,68,68,.06);border:1px solid rgba(255,68,68,.15)}
+.q-hint-btns{display:flex;gap:8px;margin-bottom:10px}
+.q-hint-btn{
+  background:transparent;border:1px solid #2a2a1a;border-radius:3px;
+  color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:1px;
+  padding:5px 12px;cursor:pointer;transition:all .2s;
+}
+.q-hint-btn:hover{border-color:var(--amber);color:var(--amber)}
+.q-hint-btn.active{border-color:var(--amber);color:var(--amber);background:rgba(255,170,0,.06)}
+.q-hint-text{font-size:13px;color:var(--amber);min-height:20px;line-height:1.7;margin-bottom:12px}
+.q-continue{
+  display:none;background:transparent;border:1px solid var(--text);border-radius:3px;
+  color:var(--text);font-family:var(--mono);font-size:13px;letter-spacing:2px;
+  padding:10px 24px;cursor:pointer;transition:all .2s;
+}
+.q-continue.show{display:inline-flex;align-items:center;gap:8px}
+.q-continue:hover{background:rgba(0,255,65,.1)}
+
+/* ══ MULTI CHOICE ═════════════════════════════════════════ */
+.q-opt.multi::before{content:'[ ]';font-size:11px}
+.q-opt.multi.sel{border-color:rgba(0,255,65,.4);background:rgba(0,255,65,.04)}
+.q-opt.multi.sel::before{content:'[✓]';color:var(--text)}
+.q-submit{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(0,255,65,.08);border:1px solid rgba(0,255,65,.3);border-radius:3px;
+  color:var(--text);font-family:var(--mono);font-size:13px;letter-spacing:1px;
+  padding:9px 20px;cursor:pointer;transition:all .2s;margin-bottom:12px;
+}
+.q-submit:hover{background:rgba(0,255,65,.15)}
+.q-submit:disabled{opacity:.3;cursor:not-allowed}
+</style>
+
+<!-- ══ INTRO ARMAGEDDON ══════════════════════════════════ -->
+<div id="intro">
+  <div class="glitch-bg"></div>
+  <div class="alarm-flash"></div>
+  <div class="intro-content">
+    <div class="phantom-logo">PHANTOM</div>
+    <div class="phantom-sub">// CRITICAL SECURITY BREACH DETECTED //</div>
+
+    <div class="alert-box">
+      <div class="alert-title">⚠ NOTFALL-BROADCAST ⚠</div>
+      <div class="alert-text">
+        Hackergruppe <span class="hl">PHANTOM</span> hat das zentrale Identitätsnetzwerk infiltriert.<br>
+        <span class="gr">50.000 digitale Identitäten</span> wurden gestohlen — Konten, Passwörter, Ausweise.<br><br>
+        Du bist der letzte Analyst mit Systemzugang.<br>
+        <span class="hl">Du hast 60 Minuten bis die Daten verkauft werden.</span>
       </div>
-      <div class="cc-block-item locked">
-        <span class="cc-block-num">BLOCK 03</span>
-        <div class="cc-block-info">
-          <div class="cc-block-name">Abschlussbericht</div>
-          <div class="cc-block-desc">Kodierung · Dokumentation</div>
-        </div>
-        <span class="cc-block-status locked"><i class="fa-solid fa-lock"></i> GESPERRT</span>
+    </div>
+
+    <div class="intro-stats">
+      <div class="istat"><div class="istat-val" id="is-victims">50.000</div><div class="istat-label">BETROFFENE</div></div>
+      <div class="istat"><div class="istat-val" id="is-data">2,3 GB</div><div class="istat-label">GESTOHLENE DATEN</div></div>
+      <div class="istat"><div class="istat-val" style="color:var(--amber)">KRITISCH</div><div class="istat-label">BEDROHUNGSLEVEL</div></div>
+    </div>
+
+    <div class="countdown-wrap">
+      <div class="countdown-label">ZEIT BIS ZUM DATENVERKAUF</div>
+      <div class="countdown" id="intro-countdown">60:00</div>
+    </div>
+
+    <button id="start-btn" onclick="startGame()">
+      [ MISSION ANNEHMEN ]
+    </button>
+  </div>
+</div>
+
+<!-- ══ ALARM MODAL ════════════════════════════════════════ -->
+<div id="alarm">
+  <div class="alarm-box">
+    <div class="alarm-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+    <div class="alarm-title">FEHLER-HÄUFUNG ERKANNT</div>
+    <div class="alarm-msg">
+      Das System protokolliert unkontrollierte Eingaben.<br><br>
+      <strong style="color:var(--red)">PHANTOM gewinnt Zeit durch deine Fehler.</strong><br>
+      Analysiere die Situation. Lies die Hinweise. Dann entscheide.
+    </div>
+    <button class="alarm-close" onclick="closeAlarm()">[ VERSTANDEN ]</button>
+  </div>
+</div>
+
+<!-- ══ FILE VIEWER ════════════════════════════════════════ -->
+<div class="file-view" id="file-view">
+  <div class="fv-bar">
+    <span class="fv-name" id="fv-name">—</span>
+    <button class="fv-close" onclick="closeFile()">[ SCHLIESSEN ]</button>
+  </div>
+  <div class="fv-content" id="fv-content"></div>
+</div>
+
+<!-- ══ QUESTION OVERLAY ═══════════════════════════════════ -->
+<div class="q-overlay" id="q-overlay">
+  <div class="q-box" id="q-box">
+    <div class="q-label" id="q-label">ANALYSE ERFORDERLICH</div>
+    <div class="q-title" id="q-title"></div>
+    <div class="q-context" id="q-context"></div>
+    <div class="q-hint-btns" id="q-hint-btns"></div>
+    <div class="q-hint-text" id="q-hint-text"></div>
+    <div class="q-options" id="q-options"></div>
+    <div class="q-feedback" id="q-feedback"></div>
+    <button class="q-continue" id="q-continue"><i class="fa-solid fa-terminal"></i> Weiter</button>
+  </div>
+</div>
+
+<!-- ══ GAME ═══════════════════════════════════════════════ -->
+<div id="game">
+  <div class="game-topbar">
+    <div class="gtb-left">
+      <span class="gtb-logo">PHANTOM//FORENSICS</span>
+      <span class="gtb-path" id="gtb-path">~/phantom_system</span>
+    </div>
+    <div class="gtb-right">
+      <span class="gtb-timer" id="gtb-timer">59:59</span>
+      <span class="gtb-hints"><i class="fa-solid fa-lightbulb"></i> Hinweise: <span id="hint-count">0</span></span>
+      <span class="gtb-progress">Beweise: <span id="evidence-count">0</span>/8</span>
+    </div>
+  </div>
+
+  <div class="game-body">
+    <div class="sidebar">
+      <div class="sb-section">
+        <div class="sb-label">VERZEICHNIS</div>
+        <div class="sb-node active" id="node-root"><i class="fa-solid fa-folder-open"></i> ~/phantom_system</div>
+        <div class="sb-node" id="node-logs"><i class="fa-solid fa-folder"></i> /logs</div>
+        <div class="sb-node" id="node-users"><i class="fa-solid fa-folder"></i> /users</div>
+        <div class="sb-node" id="node-system"><i class="fa-solid fa-folder"></i> /system</div>
+        <div class="sb-node" id="node-vault"><i class="fa-solid fa-folder"></i> /vault</div>
+        <div class="sb-node" id="node-phantom"><i class="fa-solid fa-folder"></i> /phantom</div>
+      </div>
+      <div class="sb-objective">
+        <div class="sb-obj-label">AKTUELLES ZIEL</div>
+        <div class="sb-obj-text" id="objective">Analysiere das System. Finde PHANTOMs Spuren.</div>
+      </div>
+    </div>
+
+    <div class="term-wrap">
+      <div class="term-output" id="term-output"></div>
+      <div class="cmd-area">
+        <div class="cmd-label">VERFÜGBARE BEFEHLE</div>
+        <div class="cmd-buttons" id="cmd-buttons"></div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="cc-hint-bar">
-  <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
-  <span>Hinweise verwendet:</span>
-  <span class="cc-hint-count" id="hint-count-bar">0</span>
-  <span style="margin-left:auto; color:var(--text-dim); font-size:12px">Jeder Hinweis wird gezählt · Stark sein lohnt sich</span>
-</div>
+<script>
+// ══ STATE ════════════════════════════════════════════════
+const SAVE='phantom_v1';
+let S={
+  started:null,timeLeft:60*60,
+  currentRoom:'root',
+  solved:{},evidence:0,
+  hints:0,hintsPerQ:{},
+  wrongStreak:0,alarmShown:false,
+  unlockedRooms:['root'],
+  flags:{}
+};
+try{const s=localStorage.getItem(SAVE);if(s){S=JSON.parse(s);}}catch(e){}
+
+function save(){try{localStorage.setItem(SAVE,JSON.stringify(S));}catch(e){}}
+
+// ══ INTRO ════════════════════════════════════════════════
+let introTimer=null;
+(function(){
+  if(S.started){
+    document.getElementById('intro').style.display='none';
+    document.getElementById('game').style.display='flex';
+    initGame();startTimer();
+    return;
+  }
+  let t=60*60;
+  introTimer=setInterval(()=>{
+    t--;
+    const m=String(Math.floor(t/60)).padStart(2,'0');
+    const s=String(t%60).padStart(2,'0');
+    document.getElementById('intro-countdown').textContent=m+':'+s;
+    if(t<=0)clearInterval(introTimer);
+  },1000);
+})();
+
+function startGame(){
+  clearInterval(introTimer);
+  S.started=Date.now();save();
+  document.getElementById('intro').style.display='none';
+  document.getElementById('game').style.display='flex';
+  initGame();startTimer();
+}
+
+// ══ TIMER ════════════════════════════════════════════════
+let timerInt=null;
+function startTimer(){
+  if(S.started){
+    const elapsed=Math.floor((Date.now()-S.started)/1000);
+    S.timeLeft=Math.max(0,60*60-elapsed);
+  }
+  updateTimer();
+  timerInt=setInterval(()=>{
+    S.timeLeft=Math.max(0,S.timeLeft-1);
+    updateTimer();
+  },1000);
+}
+function updateTimer(){
+  const m=String(Math.floor(S.timeLeft/60)).padStart(2,'0');
+  const s=String(S.timeLeft%60).padStart(2,'0');
+  const el=document.getElementById('gtb-timer');
+  el.textContent=m+':'+s;
+  el.style.color=S.timeLeft<600?'#ff4444':S.timeLeft<1200?'#ffaa00':'#ff4444';
+}
+
+// ══ TERMINAL OUTPUT ═══════════════════════════════════════
+function print(text,cls='out',delay=0){
+  return new Promise(res=>{
+    setTimeout(()=>{
+      const out=document.getElementById('term-output');
+      const div=document.createElement('div');
+      div.className='term-line '+(cls||'out');
+      div.innerHTML=text;
+      out.appendChild(div);
+      out.scrollTop=out.scrollHeight;
+      res();
+    },delay);
+  });
+}
+
+function printBlank(){return print('','blank');}
+
+async function typeCmd(cmd){
+  await print('<span style="color:var(--muted)">phantom@forensics</span><span style="color:var(--dim)">:</span><span style="color:var(--blue)">'+S.currentRoom+'</span><span style="color:var(--muted)">$</span> <span style="color:var(--bright)">'+cmd+'</span>','cmd');
+}
+
+async function printWithDelay(lines){
+  for(let i=0;i<lines.length;i++){
+    await print(lines[i][0],lines[i][1],lines[i][2]||i*60);
+  }
+}
+
+// ══ COMMANDS ══════════════════════════════════════════════
+function setCommands(cmds){
+  const area=document.getElementById('cmd-buttons');
+  area.innerHTML='';
+  cmds.forEach(cmd=>{
+    const btn=document.createElement('button');
+    btn.className='cmd-btn'+(cmd.primary?' primary':'')+(cmd.danger?' danger':'');
+    btn.innerHTML='<span class="cmd-prompt">$</span> '+cmd.label;
+    if(cmd.disabled)btn.disabled=true;
+    btn.onclick=()=>cmd.action();
+    area.appendChild(btn);
+  });
+}
+
+function setObjective(text){
+  document.getElementById('objective').textContent=text;
+}
+
+function updatePath(p){
+  S.currentRoom=p;
+  document.getElementById('gtb-path').textContent='~/phantom_system'+p;
+}
+
+function updateEvidence(){
+  document.getElementById('evidence-count').textContent=S.evidence;
+}
+
+function updateHints(){
+  document.getElementById('hint-count').textContent=S.hints;
+}
+
+// ══ ALARM ════════════════════════════════════════════════
+function recordWrong(){
+  S.wrongStreak++;
+  if(S.wrongStreak>=2&&!S.alarmShown){
+    S.alarmShown=true;
+    document.getElementById('alarm').classList.add('show');
+  }
+}
+function recordRight(){S.wrongStreak=0;}
+function closeAlarm(){
+  document.getElementById('alarm').classList.remove('show');
+  S.wrongStreak=0;S.alarmShown=false;
+}
+
+// ══ FILE VIEWER ═══════════════════════════════════════════
+function openFile(name,html){
+  document.getElementById('fv-name').textContent=name;
+  document.getElementById('fv-content').innerHTML=html;
+  document.getElementById('file-view').classList.add('show');
+}
+function closeFile(){document.getElementById('file-view').classList.remove('show');}
+
+// ══ QUESTION ENGINE ════════════════════════════════════════
+let currentQ=null;
+let hintLevels={};
+
+function showQuestion(q,onSuccess){
+  currentQ={...q,onSuccess,solved:S.solved[q.id]||false};
+  hintLevels[q.id]=hintLevels[q.id]||0;
+
+  const overlay=document.getElementById('q-overlay');
+  document.getElementById('q-label').textContent=q.label||'ANALYSE ERFORDERLICH';
+  document.getElementById('q-title').textContent=q.title;
+  document.getElementById('q-context').innerHTML=q.context||'';
+  document.getElementById('q-feedback').className='q-feedback';
+  document.getElementById('q-feedback').innerHTML='';
+  document.getElementById('q-continue').className='q-continue';
+  document.getElementById('q-hint-text').textContent='';
+
+  // Hints
+  const hintBtns=document.getElementById('q-hint-btns');
+  hintBtns.innerHTML='';
+  if(q.hints&&q.hints.length){
+    q.hints.forEach((h,i)=>{
+      const btn=document.createElement('button');
+      btn.className='q-hint-btn'+(i<hintLevels[q.id]?' used':'');
+      btn.textContent='Hinweis '+(i+1);
+      btn.onclick=()=>showHint(q.id,i,q.hints);
+      hintBtns.appendChild(btn);
+    });
+  }
+
+  // Options
+  const opts=document.getElementById('q-options');
+  opts.innerHTML='';
+
+  if(q.type==='multi'){
+    q.options.forEach(o=>{
+      const btn=document.createElement('button');
+      btn.className='q-opt multi'+(currentQ.solved&&q.correct.includes(o.v)?'ok':'');
+      btn.disabled=currentQ.solved;
+      btn.dataset.v=o.v;
+      btn.innerHTML='<span></span>'+o.text;
+      if(!currentQ.solved)btn.onclick=()=>{
+        if(btn.classList.contains('dis'))return;
+        btn.classList.toggle('sel');
+      };
+      opts.appendChild(btn);
+    });
+    if(!currentQ.solved){
+      const sub=document.createElement('button');
+      sub.className='q-submit';
+      sub.innerHTML='<i class="fa-solid fa-check"></i> Auswahl prüfen';
+      sub.onclick=()=>checkMultiQ(q);
+      opts.appendChild(sub);
+    }
+  }else{
+    q.options.forEach(o=>{
+      const btn=document.createElement('button');
+      btn.className='q-opt'+(currentQ.solved&&o.v===q.correct?' ok':'');
+      btn.disabled=currentQ.solved;
+      btn.dataset.v=o.v;
+      btn.innerHTML=o.text;
+      if(!currentQ.solved)btn.onclick=()=>checkSingleQ(q,o.v,btn);
+      opts.appendChild(btn);
+    });
+  }
+
+  if(currentQ.solved){
+    document.getElementById('q-continue').className='q-continue show';
+    document.getElementById('q-continue').onclick=()=>{
+      overlay.classList.remove('show');
+    };
+  }
+
+  overlay.classList.add('show');
+}
+
+function showHint(qid,level,hints){
+  if(level>=hintLevels[qid]){
+    S.hints+=(level-hintLevels[qid]+1);
+    hintLevels[qid]=level+1;
+    updateHints();save();
+  }
+  document.getElementById('q-hint-text').textContent=hints[level];
+  document.querySelectorAll('.q-hint-btn').forEach((b,i)=>{
+    b.classList.toggle('active',i===level);
+    if(i<=level)b.classList.add('used');
+  });
+}
+
+function checkSingleQ(q,val,el){
+  if(S.solved[q.id])return;
+  const isOk=val===q.correct;
+  const fb=document.getElementById('q-feedback');
+  document.querySelectorAll('.q-opt').forEach(o=>o.disabled=true);
+
+  if(isOk){
+    recordRight();
+    el.classList.add('ok');
+    fb.className='q-feedback show ok';
+    fb.innerHTML='<i class="fa-solid fa-circle-check"></i> '+q.feedback[val];
+    S.solved[q.id]=true;save();
+    setTimeout(()=>{
+      document.getElementById('q-overlay').classList.remove('show');
+      currentQ.onSuccess&&currentQ.onSuccess();
+    },1800);
+  }else{
+    recordWrong();
+    el.classList.add('no');
+    fb.className='q-feedback show no';
+    fb.innerHTML='<i class="fa-solid fa-circle-xmark"></i> '+q.feedback[val];
+    setTimeout(()=>{
+      document.querySelectorAll('.q-opt').forEach(o=>{
+        if(!o.classList.contains('no'))o.disabled=false;
+      });
+    },1200);
+  }
+}
+
+function checkMultiQ(q){
+  if(S.solved[q.id])return;
+  const sel=[...document.querySelectorAll('.q-opt.multi.sel')].map(o=>o.dataset.v).sort();
+  const correct=[...q.correct].sort();
+  const isOk=JSON.stringify(sel)===JSON.stringify(correct);
+  const fb=document.getElementById('q-feedback');
+
+  if(isOk){
+    recordRight();
+    document.querySelectorAll('.q-opt').forEach(o=>{
+      o.disabled=true;
+      if(q.correct.includes(o.dataset.v))o.classList.add('ok');
+    });
+    fb.className='q-feedback show ok';
+    fb.innerHTML='<i class="fa-solid fa-circle-check"></i> Richtig! Alle '+q.correct.length+' korrekten Antworten gefunden.';
+    S.solved[q.id]=true;save();
+    setTimeout(()=>{
+      document.getElementById('q-overlay').classList.remove('show');
+      currentQ.onSuccess&&currentQ.onSuccess();
+    },1800);
+  }else{
+    recordWrong();
+    fb.className='q-feedback show no';
+    fb.innerHTML='<i class="fa-solid fa-circle-xmark"></i> Nicht ganz — '+sel.length+' Antworten gewählt. Überprüfe deine Auswahl.';
+  }
+}
+
+// ══ SIDEBAR NODES ═════════════════════════════════════════
+function unlockNode(id,action){
+  const node=document.getElementById('node-'+id);
+  node.classList.add('unlocked');
+  node.onclick=action;
+}
+
+function setActiveNode(id){
+  document.querySelectorAll('.sb-node').forEach(n=>n.classList.remove('active'));
+  document.getElementById('node-'+id)&&document.getElementById('node-'+id).classList.add('active');
+}
+
+function doneNode(id){
+  const node=document.getElementById('node-'+id);
+  node.classList.remove('active');
+  node.classList.add('done');
+  node.innerHTML=node.innerHTML+'<span class="sb-check">✓</span>';
+}
+
+// ══ EVIDENCE ══════════════════════════════════════════════
+function addEvidence(){
+  S.evidence++;updateEvidence();save();
+  print('<span style="color:var(--amber)">⚑ BEWEIS GESICHERT — '+S.evidence+'/8 Beweise gesammelt</span>','warn');
+}
+
+// ══ GAME ROOMS ════════════════════════════════════════════
+
+// ─── ROOT ────────────────────────────────────────────────
+async function roomRoot(){
+  setActiveNode('root');
+  updatePath('');
+  setObjective('Erkunde PHANTOMs verlassenes System. Finde die Spur.');
+
+  if(!S.flags.root_intro){
+    await typeCmd('connect phantom_forensics_terminal');
+    await printWithDelay([
+      ['Verbinde mit forensischem Terminal...','dim',0],
+      ['Authentifizierung... <span style="color:var(--text)">OK</span>','out',800],
+      ['','blank',1200],
+      ['<span style="color:var(--red)">WARNUNG: Dies ist PHANTOMs verlassener Arbeitsrechner.</span>','err',1400],
+      ['<span style="color:var(--amber)">Letzte Aktivität: vor 47 Minuten.</span>','warn',1800],
+      ['<span style="color:var(--muted)">Du hast Lesezugriff auf alle Verzeichnisse.</span>','dim',2200],
+      ['','blank',2600],
+    ]);
+    await typeCmd('ls -la');
+    await printWithDelay([
+      ['drwxr-xr-x  <span style="color:var(--blue)">logs/</span>         — Systemprotokolle','out',200],
+      ['drwxr-xr-x  <span style="color:var(--blue)">users/</span>        — Benutzerkonten','out',350],
+      ['drwxr-xr-x  <span style="color:var(--blue)">system/</span>       — Systemkonfiguration','out',500],
+      ['drwx------  <span style="color:var(--blue)">vault/</span>         — <span style="color:var(--red)">ZUGRIFF BESCHRÄNKT</span>','out',650],
+      ['drwx------  <span style="color:var(--blue)">phantom/</span>       — <span style="color:var(--red)">VERSCHLÜSSELT</span>','out',800],
+      ['','blank',1000],
+      ['<span style="color:var(--amber)">→ Beginne mit /logs — dort sind die ersten Spuren.</span>','warn',1100],
+    ]);
+    S.flags.root_intro=true;save();
+  }
+
+  unlockNode('logs',()=>roomLogs());
+  setCommands([
+    {label:'cd logs/',primary:true,action:()=>roomLogs()},
+    {label:'cat README.txt',action:()=>openFile('README.txt',`
+      <div class="fv-meta">DATEI: README.txt | ERSTELLT: phantom | GEÄNDERT: vor 47 Min.</div>
+      <h2>SYSTEM-NOTIZEN</h2>
+      <p>Wenn du das liest: Ich bin weg. Das System gehört jetzt mir.</p>
+      <p>Die Daten sind bereits gesichert. Ihr werdet sie nie zurückbekommen.</p>
+      <p>— <span class="highlight">P</span></p>
+      <h2>TECHNISCHE HINWEISE</h2>
+      <p>Authentifizierungssystem: <span class="code">auth_service v2.1</span> — Standard-Konfiguration, leicht zu umgehen wenn man weiß wie.</p>
+      <p>Zugriffsrechte: <span class="code">vault_admin</span> hat zu viele Rechte. Klassischer Fehler.</p>
+    `)},
+  ]);
+}
+
+// ─── LOGS ─────────────────────────────────────────────────
+async function roomLogs(){
+  if(S.flags.room_logs_entered&&S.solved['q-auth-basic'])return roomLogsUnlocked();
+  setActiveNode('logs');
+  updatePath('/logs');
+  setObjective('Analysiere die Logs — finde wie PHANTOM reingekommen ist.');
+
+  if(!S.flags.room_logs_entered){
+    await typeCmd('cd logs/');
+    await printWithDelay([
+      ['<span style="color:var(--muted)">~/phantom_system/logs$</span>','dim',0],
+      ['','blank',300],
+      ['Verzeichnis geöffnet. <span style="color:var(--amber)">3 Dateien gefunden.</span>','out',400],
+      ['','blank',600],
+      ['📄 <span style="color:var(--text)">auth.log</span>       — Anmeldeversuche (letzte 24h)','out',700],
+      ['📄 <span style="color:var(--text)">access.log</span>     — Zugriffsprotokoll','out',850],
+      ['📄 <span style="color:var(--text)">system.log</span>     — Systemereignisse','out',1000],
+      ['','blank',1200],
+      ['<span style="color:var(--amber)">→ Die auth.log könnte zeigen wie PHANTOM reingekommen ist.</span>','warn',1300],
+    ]);
+    S.flags.room_logs_entered=true;save();
+  }
+
+  setCommands([
+    {label:'cat auth.log',primary:true,action:()=>showAuthLog()},
+    {label:'cat access.log',action:()=>showAccessLog()},
+    {label:'cat system.log',action:()=>showSystemLog()},
+    {label:'cd ../',action:()=>roomRoot()},
+  ]);
+}
+
+async function showAuthLog(){
+  await typeCmd('cat auth.log');
+  await printWithDelay([
+    ['','blank',0],
+    ['<span style="color:var(--muted)">— auth.log (letzte Einträge) ——————————————</span>','dim',100],
+    ['<span style="color:var(--red)">FAILED  03:11:42  vault_admin  wrong_password  IP:185.220.101.47</span>','err',300],
+    ['<span style="color:var(--red)">FAILED  03:11:51  vault_admin  wrong_password  IP:185.220.101.47</span>','err',450],
+    ['<span style="color:var(--red)">FAILED  03:12:03  vault_admin  wrong_password  IP:185.220.101.47</span>','err',600],
+    ['<span style="color:var(--red)">FAILED  03:12:19  vault_admin  wrong_password  IP:185.220.101.47</span>','err',750],
+    ['<span style="color:var(--amber)">SUCCESS 03:12:44  vault_admin  authenticated   IP:185.220.101.47</span>','warn',900],
+    ['<span style="color:var(--red)">SUCCESS 03:12:51  vault_admin→ROOT  PRIVILEGE ESCALATION</span>','err',1050],
+    ['','blank',1200],
+    ['<span style="color:var(--muted)">————————————————————————————————————————————</span>','dim',1300],
+    ['','blank',1400],
+  ]);
+  setTimeout(()=>{
+    if(!S.solved['q-auth-basic']){
+      showQuestion(Q_AUTH_BASIC,()=>{
+        addEvidence();
+        roomLogsUnlocked();
+      });
+    }
+  },2000);
+}
+
+async function showAccessLog(){
+  await typeCmd('cat access.log');
+  await printWithDelay([
+    ['','blank',0],
+    ['<span style="color:var(--muted)">— access.log ———————————————————————————————</span>','dim',100],
+    ['<span style="color:var(--blue)">03:12:44  GET /dashboard          vault_admin  200</span>','info',300],
+    ['<span style="color:var(--red)">03:12:51  GET /vault/identities   vault_admin  403 FORBIDDEN</span>','err',450],
+    ['<span style="color:var(--red)">03:12:52  GET /vault/identities   root         200 OK</span>','err',600],
+    ['<span style="color:var(--red)">03:12:53  GET /vault/identities   root         DOWNLOAD 2.3GB</span>','err',750],
+    ['<span style="color:var(--muted)">————————————————————————————————————————————</span>','dim',900],
+  ]);
+}
+
+async function showSystemLog(){
+  await typeCmd('cat system.log');
+  await printWithDelay([
+    ['','blank',0],
+    ['<span style="color:var(--muted)">— system.log ———————————————————————————————</span>','dim',100],
+    ['<span style="color:var(--blue)">03:12:44  AUTH_SERVICE: Login vault_admin</span>','info',300],
+    ['<span style="color:var(--amber)">03:12:51  KERNEL: Privilege escalation detected</span>','warn',450],
+    ['<span style="color:var(--red)">03:12:51  SECURITY: root access granted — NO 2FA CONFIGURED</span>','err',600],
+    ['<span style="color:var(--amber)">03:12:53  NETWORK: Large data transfer initiated</span>','warn',750],
+    ['<span style="color:var(--muted)">————————————————————————————————————————————</span>','dim',900],
+  ]);
+}
+
+async function roomLogsUnlocked(){
+  setActiveNode('logs');
+  setObjective('Untersuche die Benutzerkonten — wer ist vault_admin?');
+
+  if(!S.flags.logs_done){
+    await printWithDelay([
+      ['','blank',0],
+      ['<span style="color:var(--text)">✓ Log-Analyse abgeschlossen. Beweis gesichert.</span>','success',100],
+      ['<span style="color:var(--amber)">→ Nächster Schritt: /users — wer ist vault_admin?</span>','warn',500],
+    ]);
+    unlockNode('users',()=>roomUsers());
+    S.flags.logs_done=true;save();
+  }
+
+  setCommands([
+    {label:'cd ../users/',primary:true,action:()=>roomUsers()},
+    {label:'cat auth.log',action:()=>showAuthLog()},
+    {label:'cat access.log',action:()=>showAccessLog()},
+    {label:'cd ../',action:()=>roomRoot()},
+  ]);
+}
+
+// ─── USERS ────────────────────────────────────────────────
+async function roomUsers(){
+  setActiveNode('users');
+  updatePath('/users');
+  setObjective('Analysiere die Benutzerkonten — verstehe das Rechtesystem.');
+
+  if(!S.flags.room_users_entered){
+    await typeCmd('cd ../users/');
+    await printWithDelay([
+      ['','blank',0],
+      ['Verzeichnis geöffnet. <span style="color:var(--amber)">Benutzerdatenbank gefunden.</span>','out',400],
+      ['','blank',600],
+      ['📄 <span style="color:var(--text)">accounts.db</span>    — Alle Benutzerkonten','out',700],
+      ['📄 <span style="color:var(--text)">permissions.cfg</span> — Zugriffsrechte-Konfiguration','out',850],
+      ['📄 <span style="color:var(--text)">vault_admin.log</span> — Aktivitätsprotokoll des Accounts','out',1000],
+      ['','blank',1200],
+    ]);
+    S.flags.room_users_entered=true;save();
+  }
+
+  setCommands([
+    {label:'cat accounts.db',primary:true,action:()=>showAccounts()},
+    {label:'cat permissions.cfg',action:()=>showPermissions()},
+    {label:'cat vault_admin.log',action:()=>showVaultAdminLog()},
+    {label:'cd ../',action:()=>roomRoot()},
+  ]);
+}
+
+async function showAccounts(){
+  await typeCmd('cat accounts.db');
+  await printWithDelay([
+    ['','blank',0],
+    ['<span style="color:var(--muted)">— accounts.db ——————————————————————————————</span>','dim',100],
+    ['<span style="color:var(--blue)">USER        ROLE          LAST_LOGIN      STATUS</span>','info',300],
+    ['admin       superuser     03:12:44        <span style="color:var(--red)">COMPROMISED</span>','out',450],
+    ['vault_admin operator      03:12:44        <span style="color:var(--red)">COMPROMISED</span>','out',580],
+    ['backup_svc  service       02:00:00        OK','out',700],
+    ['monitor     readonly      01:30:12        OK','out',820],
+    ['<span style="color:var(--muted)">————————————————————————————————————————————</span>','dim',940],
+    ['','blank',1040],
+    ['<span style="color:var(--amber)">→ vault_admin hatte zu viele Rechte. Öffne permissions.cfg für Details.</span>','warn',1100],
+  ]);
+}
+
+async function showPermissions(){
+  await typeCmd('cat permissions.cfg');
+  if(!S.solved['q-auth-rights']){
+    await printWithDelay([
+      ['','blank',0],
+      ['<span style="color:var(--muted)">— permissions.cfg ——————————————————————————</span>','dim',100],
+      ['<span style="color:var(--blue)">vault_admin: READ, WRITE, EXECUTE, ADMIN</span>','info',300],
+      ['<span style="color:var(--blue)">monitor:     READ</span>','info',450],
+      ['<span style="color:var(--blue)">backup_svc:  READ, WRITE</span>','info',580],
+      ['<span style="color:var(--muted)">————————————————————————————————————————————</span>','dim',700],
+      ['','blank',800],
+    ]);
+    setTimeout(()=>showQuestion(Q_AUTH_RIGHTS,()=>{
+      addEvidence();
+      if(!S.flags.users_unlocked){
+        S.flags.users_unlocked=true;save();
+        unlockNode('system',()=>roomSystem());
+        print('<span style="color:var(--amber)">→ Nächster Schritt: /system — wie war das System konfiguriert?</span>','warn');
+      }
+      setCommands([
+        {label:'cd ../system/',primary:true,action:()=>roomSystem()},
+        {label:'cat accounts.db',action:()=>showAccounts()},
+        {label:'cat permissions.cfg',action:()=>showPermissions()},
+        {label:'cd ../',action:()=>roomRoot()},
+      ]);
+    }),1200);
+  }else{
+    await printWithDelay([
+      ['','blank',0],
+      ['<span style="color:var(--muted)">— permissions.cfg ——————————————————————————</span>','dim',100],
+      ['<span style="color:var(--blue)">vault_admin: READ, WRITE, EXECUTE, ADMIN</span>','info',300],
+      ['<span style="color:var(--blue)">monitor:     READ</span>','info',450],
+      ['<span style="color:var(--blue)">backup_svc:  READ, WRITE</span>','info',580],
+      ['<span style="color:var(--muted)">————————————————————————————————————————————</span>','dim',700],
+    ]);
+  }
+}
+
+async function showVaultAdminLog(){
+  await typeCmd('cat vault_admin.log');
+  await printWithDelay([
+    ['','blank',0],
+    ['<span style="color:var(--muted)">— vault_admin.log ——————————————————————————</span>','dim',100],
+    ['<span style="color:var(--amber)">Passwort zuletzt geändert: vor 847 Tagen</span>','warn',300],
+    ['<span style="color:var(--amber)">Passwort-Stärke: SCHWACH (8 Zeichen, nur Kleinbuchstaben)</span>','warn',450],
+    ['<span style="color:var(--red)">2FA: NICHT KONFIGURIERT</span>','err',600],
+    ['<span style="color:var(--red)">Letzte Fehlversuche: 4 in 62 Sekunden — kein automatischer Lockout</span>','err',750],
+    ['<span style="color:var(--muted)">————————————————————————————————————————————</span>','dim',900],
+  ]);
+}
+
+// ─── SYSTEM ───────────────────────────────────────────────
+async function roomSystem(){
+  setActiveNode('system');
+  updatePath('/system');
+  setObjective('Analysiere die Systemkonfiguration — Hardware und Software.');
+
+  if(!S.flags.room_system_entered){
+    await typeCmd('cd ../system/');
+    await printWithDelay([
+      ['','blank',0],
+      ['Systemkonfiguration geladen.','out',400],
+      ['','blank',600],
+      ['📄 <span style="color:var(--text)">hardware.cfg</span>   — Hardware-Spezifikationen','out',700],
+      ['📄 <span style="color:var(--text)">software.cfg</span>   — Installierte Software','out',850],
+      ['📄 <span style="color:var(--text)">network.cfg</span>    — Netzwerkkonfiguration','out',1000],
+      ['','blank',1200],
+    ]);
+    S.flags.room_system_entered=true;save();
+  }
+
+  setCommands([
+    {label:'cat hardware.cfg',primary:true,action:()=>showHardware()},
+    {label:'cat software.cfg',action:()=>showSoftware()},
+    {label:'cat network.cfg',action:()=>showNetwork()},
+    {label:'cd ../',action:()=>roomRoot()},
+  ]);
+}
+
+async function showHardware(){
+  await typeCmd('cat hardware.cfg');
+  if(!S.solved['q-hardware']){
+    await printWithDelay([
+      ['','blank',0],
+      ['<span style="color:var(--muted)">— hardware.cfg —————————————————————————————</span>','dim',100],
+      ['CPU:  Intel Core i9  |  3.6 GHz  |  16 Cores','out',300],
+      ['RAM:  64 GB DDR5     |  <span style="color:var(--amber)">Auslastung: 94% während Angriff</span>','out',450],
+      ['SSD:  2 TB NVMe      |  <span style="color:var(--red)">Betriebssystem kompromittiert</span>','out',600],
+      ['HDD:  8 TB           |  Datenspeicher — intakt','out',750],
+      ['NET:  10 Gbit/s      |  <span style="color:var(--red)">Ungewöhnlicher Traffic erkannt</span>','out',900],
+      ['<span style="color:var(--muted)">————————————————————————————————————————————</span>','dim',1050],
+      ['','blank',1150],
+    ]);
+    setTimeout(()=>showQuestion(Q_HARDWARE,()=>{
+      addEvidence();
+      if(!S.flags.system_hw_done){
+        S.flags.system_hw_done=true;save();
+        checkSystemComplete();
+      }
+    }),1400);
+  }else{
+    await print('Hardware-Analyse bereits abgeschlossen.','dim');
+  }
+}
+
+async function showSoftware(){
+  await typeCmd('cat software.cfg');
+  if(!S.solved['q-software']){
+    await printWithDelay([
+      ['','blank',0],
+      ['<span style="color:var(--muted)">— software.cfg —————————————————————————————</span>','dim',100],
+      ['<span style="color:var(--blue)">BETRIEBSSYSTEM:  Ubuntu Server 22.04 LTS</span>','info',300],
+      ['<span style="color:var(--blue)">TREIBER:         Alle Geräte erkannt und geladen</span>','info',450],
+      ['<span style="color:var(--red)">AUTH-SERVICE:    v2.1 — VERALTET, bekannte Schwachstellen</span>','err',600],
+      ['<span style="color:var(--amber)">FIREWALL:        Aktiv, aber Regel 47 deaktiviert</span>','warn',750],
+      ['<span style="color:var(--blue)">BACKUP-SERVICE:  Aktiv — letztes Backup 02:00 Uhr</span>','info',900],
+      ['<span style="color:var(--muted)">————————————————————————————————————————————</span>','dim',1050],
+    ]);
+    setTimeout(()=>showQuestion(Q_SOFTWARE,()=>{
+      addEvidence();
+      if(!S.flags.system_sw_done){
+        S.flags.system_sw_done=true;save();
+        checkSystemComplete();
+      }
+    }),1400);
+  }else{
+    await print('Software-Analyse bereits abgeschlossen.','dim');
+  }
+}
+
+async function showNetwork(){
+  await typeCmd('cat network.cfg');
+  if(!S.solved['q-network']){
+    await printWithDelay([
+      ['','blank',0],
+      ['<span style="color:var(--muted)">— network.cfg ——————————————————————————————</span>','dim',100],
+      ['<span style="color:var(--blue)">ARCHITEKTUR:  Client-Server-Modell</span>','info',300],
+      ['<span style="color:var(--blue)">SERVER:       Zentraler Datenbankserver (24/7 aktiv)</span>','info',450],
+      ['<span style="color:var(--blue)">CLIENTS:      847 angebundene Institute</span>','info',600],
+      ['<span style="color:var(--red)">ANOMALIE:     Unbekannter Client-Zugriff von IP 185.220.101.47</span>','err',750],
+      ['<span style="color:var(--amber)">DATENTRANSFER: 2.3 GB upload zu externem Server</span>','warn',900],
+      ['<span style="color:var(--muted)">————————————————————————————————————————————</span>','dim',1050],
+    ]);
+    setTimeout(()=>showQuestion(Q_NETWORK,()=>{
+      addEvidence();
+      if(!S.flags.system_net_done){
+        S.flags.system_net_done=true;save();
+        checkSystemComplete();
+      }
+    }),1400);
+  }else{
+    await print('Netzwerk-Analyse bereits abgeschlossen.','dim');
+  }
+}
+
+function checkSystemComplete(){
+  if(S.solved['q-hardware']&&S.solved['q-software']&&S.solved['q-network']){
+    if(!S.flags.system_complete){
+      S.flags.system_complete=true;save();
+      setTimeout(async()=>{
+        await printWithDelay([
+          ['','blank',0],
+          ['<span style="color:var(--text)">✓ System vollständig analysiert.</span>','success',100],
+          ['<span style="color:var(--amber)">→ Jetzt: /vault — dort liegen die gestohlenen Daten.</span>','warn',500],
+        ]);
+        unlockNode('vault',()=>roomVault());
+        doneNode('system');
+      },500);
+    }
+  }
+}
+
+// ─── VAULT ────────────────────────────────────────────────
+async function roomVault(){
+  setActiveNode('vault');
+  updatePath('/vault');
+  setObjective('Letzter Schritt: Verstehe PHANTOMs Angriff vollständig.');
+
+  if(!S.flags.room_vault_entered){
+    await typeCmd('cd ../vault/');
+    await printWithDelay([
+      ['','blank',0],
+      ['<span style="color:var(--red)">ZUGRIFF GEWÄHRT — Forensik-Modus</span>','err',400],
+      ['<span style="color:var(--amber)">Hier lagen die 50.000 gestohlenen Identitäten.</span>','warn',800],
+      ['','blank',1000],
+      ['📄 <span style="color:var(--text)">stolen_data.manifest</span>  — Was wurde gestohlen?','out',1100],
+      ['📄 <span style="color:var(--text)">attack_timeline.log</span>   — Kompletter Angriffsverlauf','out',1250],
+      ['📄 <span style="color:var(--text)">prevention.md</span>         — Was hätte es verhindert?','out',1400],
+      ['','blank',1600],
+    ]);
+    S.flags.room_vault_entered=true;save();
+  }
+
+  setCommands([
+    {label:'cat stolen_data.manifest',primary:true,action:()=>showStolenData()},
+    {label:'cat attack_timeline.log',action:()=>showTimeline()},
+    {label:'cat prevention.md',action:()=>showPrevention()},
+    {label:'cd ../',action:()=>roomRoot()},
+  ]);
+}
+
+async function showStolenData(){
+  await typeCmd('cat stolen_data.manifest');
+  await printWithDelay([
+    ['','blank',0],
+    ['<span style="color:var(--muted)">— stolen_data.manifest —————————————————————</span>','dim',100],
+    ['<span style="color:var(--red)">50.247 Einträge entwendet:</span>','err',300],
+    ['  - Vollständige Namen + Adressen','out',450],
+    ['  - Ausweisnummern (Personalausweis, Reisepass)','out',580],
+    ['  - Bankverbindungen (IBAN, BIC)','out',700],
+    ['  - Passwort-Hashes (7.834 davon bereits entschlüsselt)','out',830],
+    ['  - Biometrische Daten (Fingerabdrücke)','out',960],
+    ['','blank',1060],
+    ['<span style="color:var(--red)">Geschätzter Schaden: 180 Mio. €</span>','err',1100],
+    ['<span style="color:var(--muted)">————————————————————————————————————————————</span>','dim',1200],
+  ]);
+}
+
+async function showTimeline(){
+  await typeCmd('cat attack_timeline.log');
+  if(!S.solved['q-timeline']){
+    await printWithDelay([
+      ['','blank',0],
+      ['<span style="color:var(--muted)">— attack_timeline.log ——————————————————————</span>','dim',100],
+      ['<span style="color:var(--blue)">PHASE 1  Reconnaissance    — System von außen analysiert</span>','info',300],
+      ['<span style="color:var(--blue)">PHASE 2  Initial Access    — Brute-Force auf vault_admin</span>','info',450],
+      ['<span style="color:var(--amber)">PHASE 3  Priv. Escalation  — vault_admin → root</span>','warn',600],
+      ['<span style="color:var(--red)">PHASE 4  Exfiltration      — 2.3 GB Daten gestohlen</span>','err',750],
+      ['<span style="color:var(--muted)">————————————————————————————————————————————</span>','dim',900],
+    ]);
+    setTimeout(()=>showQuestion(Q_TIMELINE,()=>{
+      addEvidence();
+      checkVaultComplete();
+    }),1200);
+  }
+}
+
+async function showPrevention(){
+  await typeCmd('cat prevention.md');
+  if(!S.solved['q-prevention']){
+    await printWithDelay([
+      ['','blank',0],
+      ['<span style="color:var(--muted)">— prevention.md ————————————————————————————</span>','dim',100],
+      ['<span style="color:var(--amber)"># Wie wäre der Angriff verhindert worden?</span>','warn',300],
+      ['','blank',400],
+      ['Schwachstelle 1: Schwaches Passwort — kein Brute-Force-Schutz','out',500],
+      ['Schwachstelle 2: Keine 2FA konfiguriert','out',630],
+      ['Schwachstelle 3: vault_admin hatte zu viele Rechte','out',760],
+      ['Schwachstelle 4: Veraltete Auth-Software mit bekannten Lücken','out',890],
+      ['<span style="color:var(--muted)">————————————————————————————————————————————</span>','dim',1020],
+    ]);
+    setTimeout(()=>showQuestion(Q_PREVENTION,()=>{
+      addEvidence();
+      checkVaultComplete();
+    }),1300);
+  }
+}
+
+function checkVaultComplete(){
+  if(S.solved['q-timeline']&&S.solved['q-prevention']){
+    if(!S.flags.vault_complete){
+      S.flags.vault_complete=true;save();
+      showFinalSuccess();
+    }
+  }
+}
+
+async function showFinalSuccess(){
+  doneNode('vault');
+  clearInterval(timerInt);
+  await printWithDelay([
+    ['','blank',0],
+    ['','blank',0],
+    ['<span style="color:var(--text)">████████████████████████████████████████████</span>','success',200],
+    ['<span style="color:var(--text)">  MISSION ACCOMPLISHED</span>','big',600],
+    ['<span style="color:var(--text)">████████████████████████████████████████████</span>','success',1000],
+    ['','blank',1200],
+    ['<span style="color:var(--amber)">Forensische Analyse abgeschlossen.</span>','warn',1400],
+    ['<span style="color:var(--text)">PHANTOMs Angriffspfad vollständig rekonstruiert.</span>','out',1800],
+    ['<span style="color:var(--text)">Behörden wurden benachrichtigt.</span>','out',2200],
+    ['','blank',2600],
+    ['<span style="color:var(--muted)">Beweise gesammelt: '+S.evidence+'/8</span>','dim',2800],
+    ['<span style="color:var(--muted)">Hinweise verwendet: '+S.hints+'</span>','dim',3000],
+    ['<span style="color:var(--muted)">Zeit übrig: '+String(Math.floor(S.timeLeft/60)).padStart(2,'0')+':'+String(S.timeLeft%60).padStart(2,'0')+'</span>','dim',3200],
+  ]);
+  setCommands([
+    {label:'save progress',primary:true,action:()=>saveProgress()},
+    {label:'play again',danger:true,action:()=>{if(confirm('Wirklich von vorn?')){localStorage.removeItem(SAVE);location.reload();}}},
+  ]);
+}
+
+function saveProgress(){
+  const json=JSON.stringify(S);
+  const cs=fhash(json);
+  const payload=btoa(JSON.stringify({d:json,c:cs}));
+  const blob=new Blob([payload],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='phantom-progress.dat';a.click();
+  URL.revokeObjectURL(url);
+}
+function fhash(str){let h=0x811c9dc5;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=(h*0x01000193)>>>0;}return h.toString(16);}
+
+// ══ QUESTIONS DATA ════════════════════════════════════════
+
+const Q_AUTH_BASIC={
+  id:'q-auth-basic',
+  label:'BEWEIS SICHERN — AUTH.LOG ANALYSE',
+  title:'Was hat PHANTOM getan?',
+  context:'Du siehst 4× FAILED, dann 1× SUCCESS innerhalb von 62 Sekunden — alle von derselben IP.',
+  type:'single',correct:'b',
+  hints:[
+    'Schau dir die Häufigkeit der Versuche an — 62 Sekunden, 4 Fehlversuche.',
+    'Kein Mensch tippt 4 Passwörter in 62 Sekunden von Hand. Das macht ein Programm.',
+    'Diese Methode heißt Brute-Force — systematisches Durchprobieren vieler Passwörter bis eines passt.'
+  ],
+  options:[
+    {v:'a',text:'PHANTOM hat das Passwort durch eine gefälschte E-Mail (Phishing) erhalten.'},
+    {v:'b',text:'PHANTOM hat durch wiederholtes automatisches Ausprobieren (Brute-Force) das Passwort erraten.'},
+    {v:'c',text:'PHANTOM hatte das Passwort bereits und hat nur getestet ob es noch funktioniert.'},
+    {v:'d',text:'PHANTOM hat einen Mitarbeiter manipuliert das Passwort preiszugeben (Social Engineering).'},
+    {v:'e',text:'PHANTOM hat den Netzwerkverkehr abgehört und das Passwort abgefangen (Man-in-the-Middle).'},
+  ],
+  feedback:{
+    a:'Falsch — Phishing wäre eine E-Mail oder gefälschte Webseite. Hier sehen wir direkte Login-Versuche.',
+    b:'Richtig! 4 Fehlversuche in 62 Sekunden = automatisiertes Ausprobieren. Das nennt man Brute-Force-Angriff.',
+    c:'Falsch — hätte PHANTOM das Passwort bereits gehabt, wären keine Fehlversuche im Log.',
+    d:'Falsch — Social Engineering würde keine Fehlversuche im auth.log hinterlassen.',
+    e:'Falsch — Man-in-the-Middle fängt Datenpakete ab, probiert keine Passwörter.',
+  }
+};
+
+const Q_AUTH_RIGHTS={
+  id:'q-auth-rights',
+  label:'BEWEIS SICHERN — PERMISSIONS ANALYSE',
+  title:'Authentifizierung vs. Autorisierung',
+  context:'vault_admin war eingeloggt, konnte aber /vault/identities zunächst nicht öffnen (403 FORBIDDEN). Erst als root war der Zugriff möglich.',
+  type:'single',correct:'c',
+  hints:[
+    'vault_admin war eingeloggt — das System wusste bereits wer er ist.',
+    'Trotzdem wurde der Zugriff zuerst verweigert. Eingeloggt sein und dürfen sind zwei verschiedene Dinge.',
+    'Authentifizierung = Wer bin ich? (Login). Autorisierung = Was darf ich? (Rechte). Hier war die Autorisierung das Problem.'
+  ],
+  options:[
+    {v:'a',text:'Die Authentifizierung von vault_admin war fehlerhaft — das System erkannte ihn nicht richtig.'},
+    {v:'b',text:'Das Netzwerk hat den Zugriff geblockt — Firewall-Problem.'},
+    {v:'c',text:'vault_admin war authentifiziert (eingeloggt) aber nicht autorisiert (keine Berechtigung für /vault). Erst als root hatte er die nötigen Rechte.'},
+    {v:'d',text:'Die Datei war verschlüsselt und konnte nicht geöffnet werden.'},
+    {v:'e',text:'Das Betriebssystem hatte einen Fehler beim Datei-Zugriff.'},
+  ],
+  feedback:{
+    a:'Falsch — vault_admin war erfolgreich eingeloggt. Das Login hat funktioniert.',
+    b:'Falsch — die Firewall ist für externen Traffic zuständig, nicht für interne Dateizugriffsrechte.',
+    c:'Richtig! Authentifizierung (Wer bist du?) war OK. Autorisierung (Was darfst du?) war das Problem — vault_admin hatte keine Leserechte für /vault.',
+    d:'Falsch — die 200 OK nach Privilege Escalation zeigt dass die Datei lesbar war, nur nicht für vault_admin.',
+    e:'Falsch — 403 FORBIDDEN ist eine Zugriffsverweigerung, kein Systemfehler.',
+  }
+};
+
+const Q_HARDWARE={
+  id:'q-hardware',
+  label:'BEWEIS SICHERN — HARDWARE ANALYSE',
+  title:'RAM-Überlastung während des Angriffs',
+  context:'Während des Angriffs war der RAM zu 94% ausgelastet. Was passiert wenn der RAM überlastet ist?',
+  type:'single',correct:'d',
+  hints:[
+    'RAM = Arbeitsspeicher. Was ist seine Aufgabe im Vergleich zur Festplatte?',
+    'RAM speichert Daten nur temporär für aktive Programme. Was passiert wenn nicht alles reinpasst?',
+    'Wenn der RAM voll ist, muss das System auf die viel langsamere Festplatte ausweichen — das verlangsamt alles erheblich.'
+  ],
+  options:[
+    {v:'a',text:'Der Computer schaltet sich automatisch aus um Hardware zu schützen.'},
+    {v:'b',text:'Alle Daten werden dauerhaft auf der Festplatte gespeichert.'},
+    {v:'c',text:'Der Prozessor taktet automatisch herunter um weniger Strom zu verbrauchen.'},
+    {v:'d',text:'Das System muss Daten auf die langsamere Festplatte auslagern — Ladezeiten steigen drastisch.'},
+    {v:'e',text:'Das Netzwerk wird automatisch getrennt um Datenverlust zu verhindern.'},
+  ],
+  feedback:{
+    a:'Falsch — automatisches Ausschalten bei RAM-Überlastung ist kein Standard-Verhalten.',
+    b:'Falsch — RAM-Überlastung führt nicht zu automatischem dauerhaften Speichern.',
+    c:'Falsch — CPU-Throttling bei Überhitzung ist etwas anderes als RAM-Überlastung.',
+    d:'Richtig! RAM ist flüchtiger Schnellspeicher für aktive Programme. Wenn er voll ist, muss das OS auf die viel langsamere HDD/SSD auslagern (Swapping) — das merkt man sofort.',
+    e:'Falsch — Netzwerktrennung hat nichts mit RAM-Auslastung zu tun.',
+  }
+};
+
+const Q_SOFTWARE={
+  id:'q-software',
+  label:'BEWEIS SICHERN — SOFTWARE ANALYSE',
+  title:'Systemsoftware vs. Anwendungssoftware',
+  context:'Der Auth-Service ist Systemsoftware. Er war veraltet und hatte bekannte Schwachstellen. Was unterscheidet Systemsoftware von Anwendungssoftware?',
+  type:'single',correct:'b',
+  hints:[
+    'Wann startet Systemsoftware? Wann startet Anwendungssoftware?',
+    'Systemsoftware läuft automatisch beim Booten — sie ist der Vermittler zwischen Hardware und allem anderen.',
+    'Systemsoftware = Betriebssystem, Treiber, Dienste (laufen automatisch). Anwendungssoftware = Browser, Spiele (du startest sie).'
+  ],
+  options:[
+    {v:'a',text:'Systemsoftware ist teuer und muss lizenziert werden. Anwendungssoftware ist meist kostenlos.'},
+    {v:'b',text:'Systemsoftware vermittelt zwischen Hardware und Anwendungen — startet automatisch beim Booten. Anwendungssoftware erfüllt konkrete Nutzeraufgaben und wird bei Bedarf gestartet.'},
+    {v:'c',text:'Systemsoftware läuft nur auf Servern. Anwendungssoftware nur auf normalen PCs.'},
+    {v:'d',text:'Es gibt keinen wesentlichen Unterschied — alle Software arbeitet gleich.'},
+    {v:'e',text:'Systemsoftware wird vom Nutzer installiert. Anwendungssoftware ist vorinstalliert.'},
+  ],
+  feedback:{
+    a:'Falsch — Linux ist kostenlose Systemsoftware. Die Unterscheidung hat nichts mit Preis zu tun.',
+    b:'Richtig! Systemsoftware = Betriebssystem, Treiber, Dienste — läuft im Hintergrund. Anwendungssoftware = Browser, Word, Spiele — startest du selbst.',
+    c:'Falsch — Systemsoftware läuft auf allen Systemen, von Smartphones bis Servern.',
+    d:'Falsch — der Unterschied ist fundamental für das Verständnis von Informatiksystemen.',
+    e:'Falsch — die Unterscheidung hat nichts mit dem Installationszeitpunkt zu tun.',
+  }
+};
+
+const Q_NETWORK={
+  id:'q-network',
+  label:'BEWEIS SICHERN — NETZWERK ANALYSE',
+  title:'Client-Server-Prinzip',
+  context:'847 Institute sind als Clients an den zentralen Server angebunden. PHANTOM hat sich als unbekannter Client verbunden.',
+  type:'single',correct:'c',
+  hints:[
+    'Wer stellt Anfragen, wer beantwortet sie? Wer schläft nie?',
+    'Der Server läuft 24/7 und wartet auf Anfragen. Clients verbinden sich wenn sie etwas brauchen.',
+    'Client = stellt Anfragen, nutzt Dienste. Server = stellt Dienste bereit, läuft kontinuierlich, bedient viele Clients gleichzeitig.'
+  ],
+  options:[
+    {v:'a',text:'Alle Computer sind gleichberechtigt und tauschen direkt Daten aus (Peer-to-Peer).'},
+    {v:'b',text:'Clients speichern alle Daten lokal. Der Server ist nur Durchgangsstation.'},
+    {v:'c',text:'Der Server stellt Dienste und Ressourcen bereit — er läuft kontinuierlich. Clients stellen Anfragen und nutzen die Dienste.'},
+    {v:'d',text:'Server und Clients müssen immer am selben physischen Ort sein.'},
+    {v:'e',text:'Ein Client kann nur mit einem einzigen Server gleichzeitig kommunizieren.'},
+  ],
+  feedback:{
+    a:'Falsch — das beschreibt Peer-to-Peer (P2P), nicht Client-Server.',
+    b:'Falsch — beim Client-Server-Modell werden Daten zentral auf dem Server gespeichert.',
+    c:'Richtig! Der Server läuft 24/7 und wartet auf Anfragen. Clients verbinden sich wenn sie Dienste brauchen. PHANTOM hat sich als falscher Client ausgegeben.',
+    d:'Falsch — Server und Clients können weltweit verteilt sein. Das Internet ist ein globales Client-Server-System.',
+    e:'Falsch — ein Browser kommuniziert gleichzeitig mit dutzenden Webservern.',
+  }
+};
+
+const Q_TIMELINE={
+  id:'q-timeline',
+  label:'BEWEIS SICHERN — ANGRIFFSVERLAUF',
+  title:'PHANTOMs Angriffsphasen — richtige Reihenfolge',
+  context:'Rekonstruiere den kompletten Angriff. Welche Reihenfolge ist korrekt?',
+  type:'single',correct:'b',
+  hints:[
+    'Jeder Angriff beginnt mit Aufklärung — man muss das Ziel kennen bevor man angreift.',
+    'Nach dem Einbruch verschafft man sich mehr Rechte — dann erst kann man das eigentliche Ziel erreichen.',
+    'Richtige Reihenfolge: erst aufklären, dann einbrechen, dann Rechte ausweiten, dann Daten stehlen.'
+  ],
+  options:[
+    {v:'a',text:'Exfiltration → Reconnaissance → Initial Access → Privilege Escalation'},
+    {v:'b',text:'Reconnaissance → Initial Access → Privilege Escalation → Exfiltration'},
+    {v:'c',text:'Initial Access → Reconnaissance → Exfiltration → Privilege Escalation'},
+    {v:'d',text:'Privilege Escalation → Initial Access → Reconnaissance → Exfiltration'},
+    {v:'e',text:'Initial Access → Privilege Escalation → Reconnaissance → Exfiltration'},
+  ],
+  feedback:{
+    a:'Falsch — man kann keine Daten stehlen bevor man überhaupt drin ist.',
+    b:'Richtig! 1. Reconnaissance (System analysieren), 2. Initial Access (einbrechen), 3. Privilege Escalation (root werden), 4. Exfiltration (Daten stehlen).',
+    c:'Falsch — Reconnaissance muss immer zuerst kommen.',
+    d:'Falsch — Privilege Escalation setzt voraus dass man bereits Zugang hat.',
+    e:'Falsch — man kann sich keine höheren Rechte verschaffen bevor man überhaupt eingeloggt ist.',
+  }
+};
+
+const Q_PREVENTION={
+  id:'q-prevention',
+  label:'ABSCHLUSSBERICHT — PRÄVENTION',
+  title:'Was hätte den Angriff verhindert?',
+  context:'Der Angriff hatte vier klare Schwachstellen. Welche Kombination von Maßnahmen hätte ihn vollständig verhindert?',
+  type:'multi',correct:['a','c','d'],
+  hints:[
+    'Schau dir die vier Schwachstellen an: schwaches Passwort, kein 2FA, zu viele Rechte, veraltete Software.',
+    'Starkes Passwort + 2FA hätten den Initial Access verhindert. Minimale Rechte hätten Privilege Escalation verhindert.',
+    'Drei Maßnahmen direkt aus den Schwachstellen: starke Passwörter/2FA, Prinzip minimaler Rechte, aktuelle Software.'
+  ],
+  options:[
+    {v:'a',text:'Starkes Passwort + Zwei-Faktor-Authentifizierung — hätte Brute-Force verhindert.'},
+    {v:'b',text:'Schnellere Hardware — hätte den Angriff verlangsamt.'},
+    {v:'c',text:'Prinzip der minimalen Rechte — vault_admin hätte nur READ-Zugriff gebraucht.'},
+    {v:'d',text:'Aktuelle Software ohne bekannte Schwachstellen — auth_service v2.1 war veraltet.'},
+    {v:'e',text:'Das System komplett vom Internet trennen — dann gibt es keine Angriffe.'},
+  ],
+  feedback:{}
+};
+
+// ══ INIT ══════════════════════════════════════════════════
+function initGame(){
+  updateEvidence();updateHints();
+  roomRoot();
+  // Restore unlocked rooms
+  if(S.flags.logs_done)unlockNode('users',()=>roomUsers());
+  if(S.flags.users_unlocked)unlockNode('system',()=>roomSystem());
+  if(S.flags.system_complete)unlockNode('vault',()=>roomVault());
+}
+</script>

@@ -1,151 +1,443 @@
 ---
 layout: quest
 title: Block 01 · Erstzugang
-script: block1.js
 ---
 
 <div class="cc-section-title">// BLOCK 01 — ERSTZUGANG</div>
-<div class="cc-section-sub">Tatzeit: 08.09.2025 · 03:47 UTC · Betroffenes System: HLS Berlin Schulnetzwerk</div>
+<div class="cc-section-sub">Tatzeit: 08.09.2025 · 03:47 UTC · HLS Berlin Schulnetzwerk</div>
 
-<div class="cc-info">
-  <strong>Einweisung:</strong> Heute früh um 03:47 Uhr wurde ein unbefugter Zugriff auf das Schulnetzwerk der HLS Berlin registriert.
-  Jemand hat sich Zugang zum Administratorkonto verschafft und Schülerdaten eingesehen.
-  Deine Aufgabe: Analysiere die Logs, identifiziere die Schwachstellen und dokumentiere deine Erkenntnisse.
+<div class="cc-briefing">
+  <div class="cc-briefing-title">// EINWEISUNG</div>
+  <p>
+    Du hast Zugang zum System erhalten. Bevor du die Fallakte öffnen kannst,
+    musst du beweisen dass du die <strong>Grundlagen der IT-Sicherheit</strong> kennst.
+    Analysiere die Logs, beantworte die Fragen — und denk nach bevor du klickst.
+  </p>
 </div>
 
-<!-- AUFGABE 1 -->
-<div class="cc-task" data-task-id="b1_t1">
+<div id="progress-bar-wrap" style="margin-bottom:24px">
+  <div style="display:flex; justify-content:space-between; font-family:var(--font-mono); font-size:11px; color:var(--text-muted); margin-bottom:6px">
+    <span>FORTSCHRITT BLOCK 01</span>
+    <span id="b1-progress-label">0 / 8 Aufgaben</span>
+  </div>
+  <div class="cc-progress-bar" style="height:6px">
+    <div class="cc-progress-fill" id="b1-progress-fill" style="width:0%"></div>
+  </div>
+</div>
+
+<!-- ─── AUFGABE 1 ─────────────────────────────────────────── -->
+<div class="cc-task" id="task-1">
   <div class="cc-task-header">
     <span class="cc-task-num">01</span>
-    <div class="cc-task-title">Systemzugang einrichten</div>
+    <div class="cc-task-title">Was ist Authentifizierung?</div>
   </div>
   <div class="cc-task-body">
-    Bevor du die Fallakte öffnen kannst, musst du dich im CyberCore-System registrieren.
-    Wähle ein sicheres Passwort für deinen Analysten-Account. Das System bewertet es live.
+    Das System verlangt einen Login bevor du die Fallakte öffnen kannst.
+    Welche Aussage beschreibt <strong>Authentifizierung</strong> korrekt?
   </div>
-
-  <input type="password" class="cc-pw-input" id="pw-input" placeholder="Passwort eingeben…" autocomplete="off">
-  <div class="cc-pw-meter">
-    <div class="cc-pw-bar" id="bar1"></div>
-    <div class="cc-pw-bar" id="bar2"></div>
-    <div class="cc-pw-bar" id="bar3"></div>
-    <div class="cc-pw-bar" id="bar4"></div>
+  <div class="mc-options" data-task="1" data-correct="b">
+    <div class="mc-option" data-val="a">Das System prüft <strong>was du tun darfst</strong> — also deine Zugriffsrechte.</div>
+    <div class="mc-option" data-val="b">Das System prüft <strong>wer du bist</strong> — also deine Identität.</div>
+    <div class="mc-option" data-val="c">Das System <strong>speichert dein Passwort</strong> in einer Datenbank.</div>
+    <div class="mc-option" data-val="d">Das System <strong>verschlüsselt deine Verbindung</strong> zum Server.</div>
   </div>
-  <div class="cc-pw-feedback" id="pw-feedback" style="color: var(--text-dim);">—</div>
-
-  <div class="cc-spoiler" data-hint-id="b1_h1" style="margin-top:12px">
-    <div class="cc-spoiler-toggle">
-      <i class="fa-solid fa-eye"></i>
-      <span class="cc-hint-label">Hinweis anzeigen</span>
-    </div>
-    <div class="cc-spoiler-content">
-      Ein sicheres Passwort hat mindestens 8 Zeichen und enthält Großbuchstaben, Kleinbuchstaben,
-      Ziffern und Sonderzeichen. Alternativ: mindestens 25 Zeichen mit zwei Zeichenarten.
-      Beispiel eines schlechten Passworts: <code>Hunde2024!</code> — warum? Es enthält ein Wörterbuch-Wort und ein vorhersehbares Muster.
+  <div class="mc-feedback" id="feedback-1"></div>
+  <div class="mc-hint-wrap">
+    <div class="cc-spoiler" data-hint-id="b1_h1">
+      <div class="cc-spoiler-toggle"><i class="fa-solid fa-eye"></i><span class="cc-hint-label">Hinweis anzeigen</span></div>
+      <div class="cc-spoiler-content">Authentifizierung kommt von „authentisch" — echt, wirklich diese Person. Denk an: Wer meldet sich hier an? Bin ich das wirklich?</div>
     </div>
   </div>
 </div>
 
-<!-- AUFGABE 2 -->
-<div class="cc-task" data-task-id="b1_t2">
+<!-- ─── AUFGABE 2 ─────────────────────────────────────────── -->
+<div class="cc-task" id="task-2">
   <div class="cc-task-header">
     <span class="cc-task-num">02</span>
-    <div class="cc-task-title">Log-Analyse: Was ist passiert?</div>
-  </div>
-  <div class="cc-task-body">
-    Das System hat folgende Einträge in der Nacht aufgezeichnet. Lies sie sorgfältig.
-  </div>
-
-  <div class="cc-log" style="margin: 12px 0; background: var(--bg-base); border-radius: var(--radius); padding: 12px 16px;">
-    <div class="cc-log-entry"><span class="cc-log-time">03:47:22</span><span class="cc-log-msg err">LOGIN FAILED — user: admin — reason: wrong_password</span></div>
-    <div class="cc-log-entry"><span class="cc-log-time">03:47:31</span><span class="cc-log-msg err">LOGIN FAILED — user: admin — reason: wrong_password</span></div>
-    <div class="cc-log-entry"><span class="cc-log-time">03:47:44</span><span class="cc-log-msg warn">LOGIN SUCCESS — user: admin</span></div>
-    <div class="cc-log-entry"><span class="cc-log-time">03:48:01</span><span class="cc-log-msg err">ACCESS /schueler/noten — user: admin — FORBIDDEN</span></div>
-    <div class="cc-log-entry"><span class="cc-log-time">03:48:12</span><span class="cc-log-msg ok">PRIVILEGE ESCALATION — admin → root</span></div>
-    <div class="cc-log-entry"><span class="cc-log-time">03:48:15</span><span class="cc-log-msg ok">ACCESS /schueler/noten — user: root — OK</span></div>
-  </div>
-
-  <div class="cc-task-body">
-    Beschreibe in eigenen Worten: Was ist in dieser Nacht passiert? Welche zwei Schritte hat der Angreifer unternommen?
-  </div>
-
-  <textarea class="cc-input-area" data-task-id="b1_t2" placeholder="Deine Analyse hier…"></textarea>
-
-  <div class="cc-spoiler" data-hint-id="b1_h2" style="margin-top:10px">
-    <div class="cc-spoiler-toggle">
-      <i class="fa-solid fa-eye"></i>
-      <span class="cc-hint-label">Hinweis anzeigen</span>
-    </div>
-    <div class="cc-spoiler-content">
-      Schritt 1: Der Angreifer hat mehrmals versucht, sich einzuloggen — das nennt man einen
-      <strong>Brute-Force-Angriff</strong> auf die <strong>Authentifizierung</strong>.<br><br>
-      Schritt 2: Nachdem er Zugang hatte, hat er seine Rechte erweitert (root), um auf gesperrte Bereiche zuzugreifen —
-      das ist ein Problem der <strong>Autorisierung</strong>.
-    </div>
-  </div>
-
-  <div style="margin-top: 12px;">
-    <button class="cc-btn primary cc-task-done" data-task-id="b1_t2">
-      <i class="fa-solid fa-check"></i> Aufgabe abschließen
-    </button>
-  </div>
-</div>
-
-<!-- AUFGABE 3 -->
-<div class="cc-task" data-task-id="b1_t3">
-  <div class="cc-task-header">
-    <span class="cc-task-num">03</span>
     <div class="cc-task-title">Authentifizierung vs. Autorisierung</div>
   </div>
   <div class="cc-task-body">
-    Im Log tauchen zwei verschiedene Sicherheitsprobleme auf. Erkläre den Unterschied zwischen
-    <strong style="color: var(--accent)">Authentifizierung</strong> und
-    <strong style="color: var(--accent)">Autorisierung</strong> — und nenne jeweils ein Beispiel aus deinem Alltag.
+    Du hast dich eingeloggt. Jetzt willst du die Notenliste aller Schüler öffnen —
+    aber das System verweigert den Zugriff. Was passiert hier?
   </div>
-
-  <textarea class="cc-input-area" data-task-id="b1_t3" placeholder="Authentifizierung ist… / Autorisierung ist…"></textarea>
-
-  <div class="cc-spoiler" data-hint-id="b1_h3" style="margin-top:10px">
-    <div class="cc-spoiler-toggle">
-      <i class="fa-solid fa-eye"></i>
-      <span class="cc-hint-label">Hinweis anzeigen</span>
-    </div>
-    <div class="cc-spoiler-content">
-      <strong>Authentifizierung</strong> = Wer bist du? Das System prüft deine Identität. Beispiel: Login mit Benutzername + Passwort.<br><br>
-      <strong>Autorisierung</strong> = Was darfst du? Das System prüft deine Rechte. Beispiel: Ein Schüler kann seine eigenen Noten sehen, aber nicht die aller anderen.
-    </div>
+  <div class="mc-options" data-task="2" data-correct="c">
+    <div class="mc-option" data-val="a">Die <strong>Authentifizierung</strong> schlägt fehl — dein Passwort ist falsch.</div>
+    <div class="mc-option" data-val="b">Das System hat einen <strong>technischen Fehler</strong>.</div>
+    <div class="mc-option" data-val="c">Die <strong>Autorisierung</strong> verweigert den Zugriff — du hast nicht die nötigen Rechte.</div>
+    <div class="mc-option" data-val="d">Die <strong>Verschlüsselung</strong> blockiert den Zugriff.</div>
   </div>
-
-  <div style="margin-top: 12px;">
-    <button class="cc-btn primary cc-task-done" data-task-id="b1_t3">
-      <i class="fa-solid fa-check"></i> Aufgabe abschließen
-    </button>
+  <div class="mc-feedback" id="feedback-2"></div>
+  <div class="mc-hint-wrap">
+    <div class="cc-spoiler" data-hint-id="b1_h2">
+      <div class="cc-spoiler-toggle"><i class="fa-solid fa-eye"></i><span class="cc-hint-label">Hinweis anzeigen</span></div>
+      <div class="cc-spoiler-content">Du bist eingeloggt — das System weiß wer du bist. Aber darf ein normaler Schüler die Noten aller anderen sehen? Das ist eine andere Frage.</div>
+    </div>
   </div>
 </div>
 
-<!-- EXPERTENAUFGABE -->
-<div class="cc-task" data-task-id="b1_expert" style="border-color: #3a1a5a;">
+<!-- ─── AUFGABE 3 ─────────────────────────────────────────── -->
+<div class="cc-task" id="task-3">
   <div class="cc-task-header">
-    <span class="cc-task-num" style="color: #aa88ee;">EXPERT</span>
-    <div class="cc-task-title">Zwei-Faktor-Authentifizierung</div>
-    <span class="cc-tag expert" style="margin-left:auto">BONUS</span>
+    <span class="cc-task-num">03</span>
+    <div class="cc-task-title">Log-Analyse: Der erste Schritt</div>
   </div>
   <div class="cc-task-body">
-    Der Angreifer hat das Passwort geknackt. Hätte eine Zwei-Faktor-Authentifizierung (2FA) den Angriff verhindert?
-    Erkläre wie 2FA funktioniert und warum es sicherer ist als ein einzelnes Passwort.
+    Hier sind die ersten Log-Einträge der Nacht. Was hat der Angreifer als <strong>erstes</strong> getan?
   </div>
+  <div class="cc-log" style="background:var(--bg-base); border-radius:var(--radius); padding:14px 16px; margin-bottom:16px; font-size:13px">
+    <div class="cc-log-entry"><span class="cc-log-time">03:47:22</span><span class="cc-log-msg err">LOGIN FAILED — user: admin — wrong_password</span></div>
+    <div class="cc-log-entry"><span class="cc-log-time">03:47:31</span><span class="cc-log-msg err">LOGIN FAILED — user: admin — wrong_password</span></div>
+    <div class="cc-log-entry"><span class="cc-log-time">03:47:44</span><span class="cc-log-msg warn">LOGIN SUCCESS — user: admin</span></div>
+    <div class="cc-log-entry"><span class="cc-log-time">03:48:01</span><span class="cc-log-msg err">ACCESS /schueler/noten — FORBIDDEN</span></div>
+    <div class="cc-log-entry"><span class="cc-log-time">03:48:12</span><span class="cc-log-msg ok">PRIVILEGE ESCALATION — admin → root</span></div>
+  </div>
+  <div class="mc-options" data-task="3" data-correct="b">
+    <div class="mc-option" data-val="a">Er hat sofort <strong>Dateien gelöscht</strong>.</div>
+    <div class="mc-option" data-val="b">Er hat <strong>mehrfach versucht</strong> sich mit dem Admin-Konto einzuloggen.</div>
+    <div class="mc-option" data-val="c">Er hat das <strong>Passwort zurückgesetzt</strong>.</div>
+    <div class="mc-option" data-val="d">Er hat eine <strong>neue Datei hochgeladen</strong>.</div>
+  </div>
+  <div class="mc-feedback" id="feedback-3"></div>
+  <div class="mc-hint-wrap">
+    <div class="cc-spoiler" data-hint-id="b1_h3">
+      <div class="cc-spoiler-toggle"><i class="fa-solid fa-eye"></i><span class="cc-hint-label">Hinweis anzeigen</span></div>
+      <div class="cc-spoiler-content">Schau dir die Uhrzeit der ersten Einträge an. Was passiert zweimal kurz hintereinander, bevor der Login klappt?</div>
+    </div>
+  </div>
+</div>
 
-  <textarea class="cc-input-area" data-task-id="b1_expert" placeholder="2FA funktioniert, indem…"></textarea>
+<!-- ─── AUFGABE 4 ─────────────────────────────────────────── -->
+<div class="cc-task" id="task-4">
+  <div class="cc-task-header">
+    <span class="cc-task-num">04</span>
+    <div class="cc-task-title">Fachbegriff: Brute-Force</div>
+  </div>
+  <div class="cc-task-body">
+    Der Angreifer hat das Passwort durch wiederholtes Ausprobieren erraten.
+    Wie nennt man diese Angriffsmethode?
+  </div>
+  <div class="mc-options" data-task="4" data-correct="a">
+    <div class="mc-option" data-val="a"><strong>Brute-Force-Angriff</strong> — systematisches Durchprobieren vieler Passwörter.</div>
+    <div class="mc-option" data-val="b"><strong>Phishing</strong> — gefälschte E-Mails um Passwörter zu stehlen.</div>
+    <div class="mc-option" data-val="c"><strong>SQL-Injection</strong> — Angriff auf Datenbankabfragen.</div>
+    <div class="mc-option" data-val="d"><strong>Man-in-the-Middle</strong> — Abfangen von Daten zwischen zwei Parteien.</div>
+  </div>
+  <div class="mc-feedback" id="feedback-4"></div>
+  <div class="mc-hint-wrap">
+    <div class="cc-spoiler" data-hint-id="b1_h4">
+      <div class="cc-spoiler-toggle"><i class="fa-solid fa-eye"></i><span class="cc-hint-label">Hinweis anzeigen</span></div>
+      <div class="cc-spoiler-content">„Brute" bedeutet auf Englisch „rohe Gewalt". Der Angreifer benutzt keine Tricks — er probiert einfach so lange bis er Glück hat.</div>
+    </div>
+  </div>
+</div>
 
-  <div style="margin-top: 12px;">
-    <button class="cc-btn cc-task-done" data-task-id="b1_expert" style="border-color: #3a1a5a; color: #aa88ee;">
-      <i class="fa-solid fa-check"></i> Bonusaufgabe abschließen
+<!-- ─── AUFGABE 5 ─────────────────────────────────────────── -->
+<div class="cc-task" id="task-5">
+  <div class="cc-task-header">
+    <span class="cc-task-num">05</span>
+    <div class="cc-task-title">Passwort-Analyse</div>
+  </div>
+  <div class="cc-task-body">
+    Das Admin-Passwort konnte erraten werden. Welches dieser Passwörter wäre am <strong>schwersten</strong> zu knacken?
+  </div>
+  <div class="mc-options" data-task="5" data-correct="d">
+    <div class="mc-option" data-val="a"><code>admin123</code> — kurz, häufig verwendet</div>
+    <div class="mc-option" data-val="b"><code>Berlin2024!</code> — Stadtname + Jahr + Sonderzeichen</div>
+    <div class="mc-option" data-val="c"><code>P@ssw0rd</code> — klassische Ersetzungen</div>
+    <div class="mc-option" data-val="d"><code>Tisch!Mond42#Wolke</code> — drei zufällige Wörter + Sonderzeichen + Zahl</div>
+  </div>
+  <div class="mc-feedback" id="feedback-5"></div>
+  <div class="mc-hint-wrap">
+    <div class="cc-spoiler" data-hint-id="b1_h5">
+      <div class="cc-spoiler-toggle"><i class="fa-solid fa-eye"></i><span class="cc-hint-label">Hinweis anzeigen</span></div>
+      <div class="cc-spoiler-content">Ein gutes Passwort ist entweder kurz aber sehr komplex (4 Zeichenarten, 8+ Zeichen) — oder sehr lang (25+ Zeichen, 2 Zeichenarten). Wörterbucheinträge und Jahreszahlen sind bekannte Muster.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── AUFGABE 6 ─────────────────────────────────────────── -->
+<div class="cc-task" id="task-6">
+  <div class="cc-task-header">
+    <span class="cc-task-num">06</span>
+    <div class="cc-task-title">Privilege Escalation</div>
+  </div>
+  <div class="cc-task-body">
+    Nach dem Login sieht der Angreifer im Log: <code style="color:var(--amber)">PRIVILEGE ESCALATION — admin → root</code>.
+    Was bedeutet das?
+  </div>
+  <div class="mc-options" data-task="6" data-correct="b">
+    <div class="mc-option" data-val="a">Der Angreifer hat <strong>sein Passwort geändert</strong>.</div>
+    <div class="mc-option" data-val="b">Der Angreifer hat sich <strong>höhere Zugriffsrechte</strong> verschafft als er eigentlich hat.</div>
+    <div class="mc-option" data-val="c">Der Angreifer hat das System <strong>neu gestartet</strong>.</div>
+    <div class="mc-option" data-val="d">Der Angreifer hat <strong>Dateien verschlüsselt</strong>.</div>
+  </div>
+  <div class="mc-feedback" id="feedback-6"></div>
+  <div class="mc-hint-wrap">
+    <div class="cc-spoiler" data-hint-id="b1_h6">
+      <div class="cc-spoiler-toggle"><i class="fa-solid fa-eye"></i><span class="cc-hint-label">Hinweis anzeigen</span></div>
+      <div class="cc-spoiler-content">„Privilege" = Recht/Berechtigung. „Escalation" = Eskalation, Steigerung. „root" ist der höchste Benutzer im System — darf alles.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── AUFGABE 7 ─────────────────────────────────────────── -->
+<div class="cc-task" id="task-7">
+  <div class="cc-task-header">
+    <span class="cc-task-num">07</span>
+    <div class="cc-task-title">Verhaltensregeln: PC-Raum</div>
+  </div>
+  <div class="cc-task-body">
+    Der Angreifer konnte das Admin-Passwort möglicherweise im Schulgebäude abfangen.
+    Welche Regel hätte das verhindern können?
+  </div>
+  <div class="mc-options" data-task="7" data-correct="c">
+    <div class="mc-option" data-val="a">Schüler dürfen den PC-Raum <strong>ohne Lehrkraft</strong> betreten.</div>
+    <div class="mc-option" data-val="b">Man darf <strong>das Passwort eines anderen</strong> benutzen wenn man das eigene vergessen hat.</div>
+    <div class="mc-option" data-val="c">Jeder benutzt <strong>ausschließlich sein eigenes Konto und Passwort</strong> — niemand gibt sein Passwort weiter.</div>
+    <div class="mc-option" data-val="d">Computer werden am Ende des Unterrichts <strong>nicht heruntergefahren</strong>.</div>
+  </div>
+  <div class="mc-feedback" id="feedback-7"></div>
+  <div class="mc-hint-wrap">
+    <div class="cc-spoiler" data-hint-id="b1_h7">
+      <div class="cc-spoiler-toggle"><i class="fa-solid fa-eye"></i><span class="cc-hint-label">Hinweis anzeigen</span></div>
+      <div class="cc-spoiler-content">Die Verhaltensregeln im PC-Raum sind nicht willkürlich — sie schützen das System. Welche Regel verhindert direkt, dass jemand fremde Zugangsdaten benutzt?</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── AUFGABE 8 ─────────────────────────────────────────── -->
+<div class="cc-task" id="task-8">
+  <div class="cc-task-header">
+    <span class="cc-task-num">08</span>
+    <div class="cc-task-title">Zwei-Faktor-Authentifizierung (2FA)</div>
+  </div>
+  <div class="cc-task-body">
+    Hätte eine Zwei-Faktor-Authentifizierung den Angriff verhindert?
+    Was ist das Prinzip von 2FA?
+  </div>
+  <div class="mc-options" data-task="8" data-correct="b">
+    <div class="mc-option" data-val="a">Man braucht <strong>zwei verschiedene Passwörter</strong> nacheinander.</div>
+    <div class="mc-option" data-val="b">Man braucht neben dem Passwort einen <strong>zweiten Beweis</strong> — z.B. einen Code aufs Handy.</div>
+    <div class="mc-option" data-val="c">Das Passwort wird <strong>doppelt verschlüsselt</strong> gespeichert.</div>
+    <div class="mc-option" data-val="d">Man muss sich <strong>von zwei verschiedenen Geräten</strong> gleichzeitig einloggen.</div>
+  </div>
+  <div class="mc-feedback" id="feedback-8"></div>
+  <div class="mc-hint-wrap">
+    <div class="cc-spoiler" data-hint-id="b1_h8">
+      <div class="cc-spoiler-toggle"><i class="fa-solid fa-eye"></i><span class="cc-hint-label">Hinweis anzeigen</span></div>
+      <div class="cc-spoiler-content">2FA = zwei Faktoren. Faktor 1: etwas das du <strong>weißt</strong> (Passwort). Faktor 2: etwas das du <strong>hast</strong> (Handy) oder <strong>bist</strong> (Fingerabdruck). Beide müssen stimmen.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── ABSCHLUSS ─────────────────────────────────────────── -->
+<div class="cc-task" id="task-complete" style="display:none; border-color:var(--green)">
+  <div class="cc-task-header">
+    <span class="cc-task-num" style="color:var(--green); border-color:var(--green); background:rgba(46,204,113,0.1)">
+      <i class="fa-solid fa-check"></i>
+    </span>
+    <div class="cc-task-title" style="color:var(--green)">Block 01 abgeschlossen</div>
+  </div>
+  <div class="cc-task-body">
+    Du hast alle Aufgaben gelöst. Der Zugang zur Fallakte wurde freigeschaltet.
+    Speichere deinen Fortschritt bevor du weiter machst.
+  </div>
+  <div style="display:flex; gap:12px; margin-top:8px; flex-wrap:wrap">
+    <button class="cc-btn primary" onclick="Storage.exportData()">
+      <i class="fa-solid fa-floppy-disk"></i> Fortschritt speichern
     </button>
+    <a href="/quest/" class="cc-btn">
+      <i class="fa-solid fa-gauge-high"></i> Zum Dashboard
+    </a>
   </div>
 </div>
 
-<div style="display: flex; justify-content: flex-end; margin-top: 8px;">
-  <button class="cc-btn primary" onclick="Storage.exportData()">
-    <i class="fa-solid fa-floppy-disk"></i> Fortschritt speichern
-  </button>
-</div>
+<style>
+.mc-options { display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
+
+.mc-option {
+  background: var(--bg-base);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  line-height: 1.6;
+}
+
+.mc-option:hover:not(.disabled) {
+  border-color: var(--accent);
+  color: var(--text-primary);
+  background: rgba(56,190,255,0.05);
+}
+
+.mc-option.correct {
+  border-color: var(--green);
+  background: rgba(46,204,113,0.08);
+  color: var(--text-primary);
+}
+
+.mc-option.wrong {
+  border-color: var(--red);
+  background: rgba(231,76,60,0.08);
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.mc-option.disabled { cursor: not-allowed; }
+
+.mc-feedback {
+  display: none;
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 12px;
+  animation: slideDown 0.3s ease;
+}
+
+.mc-feedback.show { display: block; }
+
+.mc-feedback.ok {
+  background: rgba(46,204,113,0.08);
+  border: 1px solid rgba(46,204,113,0.3);
+  color: #7ee8a2;
+}
+
+.mc-feedback.err {
+  background: rgba(231,76,60,0.08);
+  border: 1px solid rgba(231,76,60,0.3);
+  color: #f0a0a0;
+}
+
+.mc-hint-wrap { margin-top: 4px; }
+
+code {
+  background: rgba(0,0,0,0.3);
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+</style>
+
+<script>
+const FEEDBACK = {
+  1: {
+    a: "Falsch — das beschreibt die <strong>Autorisierung</strong>, nicht die Authentifizierung.",
+    b: "Richtig! Authentifizierung = Identitätsprüfung. Das System fragt: Wer bist du wirklich?",
+    c: "Falsch — das Speichern von Passwörtern ist ein technischer Vorgang, keine Authentifizierung.",
+    d: "Falsch — Verschlüsselung schützt Daten auf dem Weg, hat aber nichts mit Identitätsprüfung zu tun."
+  },
+  2: {
+    a: "Falsch — du bist bereits eingeloggt. Die Authentifizierung war erfolgreich.",
+    b: "Falsch — das System funktioniert korrekt. Es macht genau was es soll.",
+    c: "Richtig! Du bist authentifiziert (eingeloggt) — aber nicht autorisiert (berechtigt) die Notenliste zu sehen.",
+    d: "Falsch — Verschlüsselung hat mit Zugriffsrechten nichts zu tun."
+  },
+  3: {
+    a: "Falsch — das passiert erst später, wenn überhaupt. Schau dir die Reihenfolge der Logs an.",
+    b: "Richtig! Zweimal LOGIN FAILED kurz hintereinander — das ist ein Brute-Force-Versuch.",
+    c: "Falsch — ein Passwort zurücksetzen würde anders im Log erscheinen.",
+    d: "Falsch — kein Hinweis auf einen Datei-Upload in den Logs."
+  },
+  4: {
+    a: "Richtig! Brute-Force = rohe Gewalt. Tausende Passwörter ausprobieren bis eines passt.",
+    b: "Falsch — Phishing ist das Versenden gefälschter E-Mails oder Webseiten um Passwörter zu stehlen.",
+    c: "Falsch — SQL-Injection greift Datenbankabfragen an, nicht Login-Formulare durch Raten.",
+    d: "Falsch — Man-in-the-Middle fängt Daten zwischen zwei Kommunikationspartnern ab."
+  },
+  5: {
+    a: "Falsch — <code>admin123</code> steht auf jeder Passwort-Blacklist. Wird zuerst probiert.",
+    b: "Falsch — Stadtname + Jahreszahl ist ein bekanntes Muster. Angreifer kennen diese Tricks.",
+    c: "Falsch — <code>P@ssw0rd</code> ist eine klassische Ersetzung die jeder Angreifer kennt.",
+    d: "Richtig! Drei zufällige Wörter + Sonderzeichen + Zahl = lang, unvorhersehbar, schwer zu knacken."
+  },
+  6: {
+    a: "Falsch — eine Passwortänderung wäre ein anderer Log-Eintrag.",
+    b: "Richtig! Root ist der mächtigste Benutzer. Der Angreifer hat sich vom normalen Admin zum Superadmin hochgearbeitet.",
+    c: "Falsch — kein Hinweis auf einen Neustart im Log.",
+    d: "Falsch — das wäre ein Ransomware-Angriff, hier geht es um Rechteausweitung."
+  },
+  7: {
+    a: "Falsch — das ist genau <em>falsch</em>. Schüler dürfen den Raum nur mit Lehrkraft betreten.",
+    b: "Falsch — das wäre ein klarer Verstoß gegen die Sicherheitsregeln.",
+    c: "Richtig! Kein geteiltes Passwort, kein fremdes Konto. Jeder ist für sein eigenes Konto verantwortlich.",
+    d: "Falsch — Computer sollten am Ende heruntergefahren werden. Das schützt Daten."
+  },
+  8: {
+    a: "Falsch — zwei Passwörter wären nur mehr vom selben Faktor. Wenn eines kompromittiert ist, ist das andere es auch.",
+    b: "Richtig! 2FA kombiniert zwei verschiedene Faktoren. Auch wenn das Passwort gestohlen wird — ohne das Handy geht nichts.",
+    c: "Falsch — doppelte Verschlüsselung hat nichts mit Authentifizierung zu tun.",
+    d: "Falsch — zwei Geräte gleichzeitig wären unpraktisch und kein Sicherheitskonzept."
+  }
+};
+
+let solved = JSON.parse(localStorage.getItem('b1_solved') || '{}');
+
+function updateProgress() {
+  const count = Object.keys(solved).length;
+  const pct = Math.round(count / 8 * 100);
+  document.getElementById('b1-progress-fill').style.width = pct + '%';
+  document.getElementById('b1-progress-label').textContent = count + ' / 8 Aufgaben';
+  Storage.set({ b1_solved: count });
+  if (count >= 8) {
+    document.getElementById('task-complete').style.display = 'block';
+    document.getElementById('task-complete').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function handleAnswer(taskNum, val, correct, el) {
+  if (solved[taskNum]) return;
+
+  const container = el.closest('.mc-options');
+  const feedback = document.getElementById('feedback-' + taskNum);
+  const isCorrect = val === correct;
+
+  container.querySelectorAll('.mc-option').forEach(o => o.classList.add('disabled'));
+
+  if (isCorrect) {
+    el.classList.add('correct');
+    feedback.className = 'mc-feedback show ok';
+    feedback.innerHTML = '<i class="fa-solid fa-circle-check"></i> ' + FEEDBACK[taskNum][val];
+    solved[taskNum] = true;
+    localStorage.setItem('b1_solved', JSON.stringify(solved));
+    updateProgress();
+  } else {
+    el.classList.add('wrong');
+    feedback.className = 'mc-feedback show err';
+    feedback.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> ' + FEEDBACK[taskNum][val];
+    setTimeout(() => {
+      container.querySelectorAll('.mc-option').forEach(o => o.classList.remove('disabled'));
+      el.style.opacity = '0.4';
+      el.style.pointerEvents = 'none';
+    }, 1200);
+  }
+}
+
+document.querySelectorAll('.mc-options').forEach(container => {
+  const taskNum = parseInt(container.dataset.task);
+  const correct = container.dataset.correct;
+
+  if (solved[taskNum]) {
+    container.querySelectorAll('.mc-option').forEach(o => {
+      o.classList.add('disabled');
+      if (o.dataset.val === correct) o.classList.add('correct');
+    });
+    const feedback = document.getElementById('feedback-' + taskNum);
+    feedback.className = 'mc-feedback show ok';
+    feedback.innerHTML = '<i class="fa-solid fa-circle-check"></i> ' + FEEDBACK[taskNum][correct];
+  }
+
+  container.querySelectorAll('.mc-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      handleAnswer(taskNum, opt.dataset.val, correct, opt);
+    });
+  });
+});
+
+updateProgress();
+</script>

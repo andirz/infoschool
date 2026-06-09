@@ -1,29 +1,29 @@
 <nav class="cc-sidebar">
   <div class="cc-nav-section">
     <div class="cc-nav-label">NAVIGATION</div>
-    <a href="/quest/" class="cc-nav-item {% if page.url == '/quest/' %}active{% endif %}">
+    <a href="{{ site.baseurl }}/quest/" class="cc-nav-item {% if page.url == '/quest/' %}active{% endif %}">
       <i class="fa-solid fa-gauge-high" aria-hidden="true"></i> Dashboard
     </a>
-    <a href="/quest/fallakte/" class="cc-nav-item {% if page.url contains 'fallakte' %}active{% endif %}">
+    <a href="{{ site.baseurl }}/quest/fallakte/" class="cc-nav-item {% if page.url contains 'fallakte' %}active{% endif %}">
       <i class="fa-solid fa-folder-open" aria-hidden="true"></i> Fallakte
       <span class="cc-nav-badge">NEU</span>
     </a>
-    <a href="/quest/logs/" class="cc-nav-item {% if page.url contains 'logs' %}active{% endif %}">
+    <a href="{{ site.baseurl }}/quest/logs/" class="cc-nav-item {% if page.url contains 'logs' %}active{% endif %}">
       <i class="fa-solid fa-terminal" aria-hidden="true"></i> Logdateien
     </a>
-    <a href="/quest/hardware/" class="cc-nav-item {% if page.url contains 'hardware' %}active{% endif %}">
+    <a href="{{ site.baseurl }}/quest/hardware/" class="cc-nav-item {% if page.url contains 'hardware' %}active{% endif %}">
       <i class="fa-solid fa-microchip" aria-hidden="true"></i> Hardware-Lab
     </a>
-    <a href="/quest/eva/" class="cc-nav-item {% if page.url contains 'eva' %}active{% endif %}">
+    <a href="{{ site.baseurl }}/quest/eva/" class="cc-nav-item {% if page.url contains 'eva' %}active{% endif %}">
       <i class="fa-solid fa-arrow-right-arrow-left" aria-hidden="true"></i> EVA-Analyse
     </a>
-    <a href="/quest/wissen/" class="cc-nav-item {% if page.url contains 'wissen' %}active{% endif %}">
+    <a href="{{ site.baseurl }}/quest/wissen/" class="cc-nav-item {% if page.url contains 'wissen' %}active{% endif %}">
       <i class="fa-solid fa-book-open" aria-hidden="true"></i> Wissensbasis
     </a>
   </div>
   <div class="cc-nav-section">
     <div class="cc-nav-label">BERICHT</div>
-    <a href="/quest/protokoll/" class="cc-nav-item {% if page.url contains 'protokoll' %}active{% endif %}">
+    <a href="{{ site.baseurl }}/quest/protokoll/" class="cc-nav-item {% if page.url contains 'protokoll' %}active{% endif %}">
       <i class="fa-solid fa-clipboard-list" aria-hidden="true"></i> Protokoll
     </a>
     <a href="#" class="cc-nav-item" id="export-btn">
